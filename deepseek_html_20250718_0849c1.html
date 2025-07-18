@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marlon Wright's Dropshipping Masterplan</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #e74c3c;
+            --accent: #3498db;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated Header */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--dark));
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            animation: gradientShift 8s infinite alternate;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        .logo {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: inline-block;
+            background: linear-gradient(to right, #f39c12, #e74c3c);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Navigation */
+        nav {
+            background: white;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--secondary);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--secondary);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .hero-content {
+            flex: 1;
+            padding-right: 2rem;
+            animation: fadeInLeft 1s ease-out;
+        }
+
+        @keyframes fadeInLeft {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .hero-image {
+            flex: 1;
+            position: relative;
+            animation: fadeInRight 1s ease-out;
+        }
+
+        @keyframes fadeInRight {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .hero-image img {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            transition: var(--transition);
+        }
+
+        .hero-image:hover img {
+            transform: scale(1.02);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: #555;
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--secondary);
+            color: white;
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
+            background: #c0392b;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 5rem 2rem;
+            background: white;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            display: inline-block;
+        }
+
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 4px;
+            background: var(--secondary);
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            text-align: center;
+            border-top: 4px solid var(--accent);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        /* Business Plan Section */
+        .business-plan {
+            padding: 5rem 2rem;
+            background: #f9f9f9;
+        }
+
+        .plan-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .plan-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 0.8rem 1.5rem;
+            background: white;
+            border: none;
+            border-radius: 30px;
+            margin: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+
+        .tab-btn.active {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .plan-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .plan-card h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+
+        .plan-card ul {
+            list-style-position: inside;
+            margin-bottom: 1.5rem;
+        }
+
+        .plan-card li {
+            margin-bottom: 0.5rem;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .plan-card li::before {
+            content: '✓';
+            color: var(--success);
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* Proven Models Section */
+        .proven-models {
+            padding: 5rem 2rem;
+            background: white;
+        }
+
+        .models-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 2rem;
+        }
+
+        .model-card {
+            display: flex;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: var(--transition);
+        }
+
+        .model-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+        .model-card img {
+            width: 200px;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .model-content {
+            padding: 2rem;
+            flex: 1;
+        }
+
+        .model-content h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .model-content p {
+            margin-bottom: 1.5rem;
+            color: #555;
+        }
+
+        /* CTA Section */
+        .cta {
+            padding: 5rem 2rem;
+            text-align: center;
+            background: var(--accent);
+            color: white;
+        }
+
+        .cta h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+
+        .btn-light {
+            background: white;
+            color: var(--accent);
+        }
+
+        .btn-light:hover {
+            background: #f1f1f1;
+            color: var(--accent);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 3rem 2rem;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-col h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-col h3::after {
+            content: '';
+            position: absolute;
+            width: 50px;
+            height: 3px;
+            background: var(--secondary);
+            bottom: 0;
+            left: 0;
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-col a {
+            color: #ddd;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-col a:hover {
+            color: var(--accent);
+            padding-left: 5px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            color: white;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            background: var(--accent);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Animations */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .hero-content {
+                padding-right: 0;
+                margin-bottom: 2rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .models-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .model-card {
+                flex-direction: column;
+            }
+            
+            .model-card img {
+                width: 100%;
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">Marlon Wright's Dropshipping Masterplan</div>
+            <p>Transformando importaciones en ganancias desde China a Costa Rica</p>
+        </div>
+    </header>
+
+    <nav>
+        <div class="nav-container">
+            <div class="logo-small">MW Dropship</div>
+            <div class="nav-links">
+                <a href="#inicio">Inicio</a>
+                <a href="#plan">Plan de Negocio</a>
+                <a href="#ventajas">Ventajas</a>
+                <a href="#modelos">Modelos</a>
+                <a href="#contacto">Contacto</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero" id="inicio">
+        <div class="hero-content">
+            <h1>Revoluciona tu Negocio de Dropshipping</h1>
+            <p>Descubre cómo comprar productos directamente de fábricas en China con márgenes de ganancia del 100-150%, evitando intermediarios como Temu. Sistema probado para el mercado costarricense.</p>
+            <a href="#plan" class="btn">Ver Plan Completo</a>
+        </div>
+        <div class="hero-image">
+            <img src="https://images.unsplash.com/photo-1556740738-b6a63e27c4df?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Dropshipping desde China">
+        </div>
+    </section>
+
+    <section class="features" id="ventajas">
+        <div class="section-title">
+            <h2>Ventajas Clave</h2>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon">
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+                <h3>Márgenes 100-150%</h3>
+                <p>Compra directo de fábricas en 1688.com con precios 30-60% más bajos que Temu</p>
+            </div>
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon">
+                    <i class="fas fa-shipping-fast"></i>
+                </div>
+                <h3>Envíos Rápidos</h3>
+                <p>Stock local en CR para entregas en 2-3 días vs 15-30 días de la competencia</p>
+            </div>
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3>ROI en 2-3 Meses</h3>
+                <p>Modelo probado con recuperación de inversión rápida y crecimiento escalable</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="business-plan" id="plan">
+        <div class="section-title">
+            <h2>Plan de Negocio Detallado</h2>
+        </div>
+        <div class="plan-container">
+            <div class="plan-tabs">
+                <button class="tab-btn active" data-tab="tab1">Fase 1</button>
+                <button class="tab-btn" data-tab="tab2">Fase 2</button>
+                <button class="tab-btn" data-tab="tab3">Fase 3</button>
+                <button class="tab-btn" data-tab="tab4">Finanzas</button>
+            </div>
+
+            <div id="tab1" class="tab-content active">
+                <div class="plan-card animate-on-scroll">
+                    <h3>Selección de Productos (Meses 1-2)</h3>
+                    <ul>
+                        <li>Identificar 10-15 productos de alta demanda en CR</li>
+                        <li>Pedir muestras a 3-5 proveedores en 1688.com</li>
+                        <li>Evaluar calidad, tiempo de envío y reacción de clientes</li>
+                        <li>Productos recomendados: herramientas eléctricas, gadgets tecnológicos, organizadores</li>
+                    </ul>
+                </div>
+                <div class="plan-card animate-on-scroll">
+                    <h3>Primer Pedido (Mes 3)</h3>
+                    <ul>
+                        <li>Compra inicial de 500-1,000 unidades (₡3.5M-₡6M)</li>
+                        <li>Envío marítimo para reducir costos (45-60 días)</li>
+                        <li>Configuración de tienda online con Django</li>
+                        <li>Lanzamiento con campaña Meta Ads (₡500K inicial)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="tab2" class="tab-content">
+                <div class="plan-card animate-on-scroll">
+                    <h3>Optimización (Meses 4-6)</h3>
+                    <ul>
+                        <li>Automatizar procesos con ERP básico</li>
+                        <li>Contratar asistente logístico (₡1.2M/mes)</li>
+                        <li>Expandir a 50 SKUs basado en ventas</li>
+                        <li>Implementar programa de fidelización</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="tab3" class="tab-content">
+                <div class="plan-card animate-on-scroll">
+                    <h3>Expansión (Meses 7-12)</h3>
+                    <ul>
+                        <li>Almacén pequeño en CR (₡300K/mes)</li>
+                        <li>Equipo de 3 personas</li>
+                        <li>Importación directa de contenedores</li>
+                        <li>Expansión a otros mercados centroamericanos</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="tab4" class="tab-content">
+                <div class="plan-card animate-on-scroll">
+                    <h3>Proyección Financiera</h3>
+                    <ul>
+                        <li>Inversión inicial: ₡6M-₡10M</li>
+                        <li>Ventas mensuales (Fase 1): 450 unidades = ₡9M</li>
+                        <li>Ganancia neta: ₡3.5M/mes</li>
+                        <li>ROI: 2-3 meses</li>
+                    </ul>
+                </div>
+                <div class="plan-card animate-on-scroll">
+                    <h3>Estructura de Costos</h3>
+                    <ul>
+                        <li>Producto + envío + impuestos: ₡8,000/unidad</li>
+                        <li>Precio venta: ₡18,000-₡25,000</li>
+                        <li>Ganancia bruta: ₡10,000-₡17,000/unidad</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="proven-models" id="modelos">
+        <div class="section-title">
+            <h2>Modelos Comprobados</h2>
+        </div>
+        <div class="models-container">
+            <div class="model-card animate-on-scroll">
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Tienda Online">
+                <div class="model-content">
+                    <h3>Tienda Online de Éxito</h3>
+                    <p>InnoShop CR ha implementado este modelo con resultados extraordinarios. Explora su catálogo de herramientas y artículos diversos.</p>
+                    <a href="https://innoshopcr.com/collections/herramientasymas?sfnsn=wa" class="btn" target="_blank">Visitar Tienda</a>
+                </div>
+            </div>
+            <div class="model-card animate-on-scroll">
+                <img src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Página de Facebook">
+                <div class="model-content">
+                    <h3>Ventas por Facebook</h3>
+                    <p>Perfil de Facebook que utiliza el sistema de pedidos directos y entrega rápida con inventario local. Miles de seguidores y ventas diarias.</p>
+                    <a href="#" class="btn" target="_blank">Ver Perfil</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta" id="contacto">
+        <h2>¿Listo para Transformar tu Negocio?</h2>
+        <p>Descarga nuestro manual completo con lista de proveedores verificados, plantillas de contratos y estrategias de marketing probadas.</p>
+        <a href="chrome-native://pdf/link?url=content%3A%2F%2Fmedia%2Fexternal%2Fdownloads%2F1000061884" class="btn btn-light">Descargar Guía Gratis</a>
+    </section>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3>MW Dropshipping</h3>
+                <p>Sistema probado para importar y vender productos desde China al mercado costarricense con altos márgenes.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h3>Enlaces</h3>
+                <ul>
+                    <li><a href="#inicio">Inicio</a></li>
+                    <li><a href="#plan">Plan de Negocio</a></li>
+                    <li><a href="#ventajas">Ventajas</a></li>
+                    <li><a href="#modelos">Modelos</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Contacto</h3>
+                <ul>
+                    <li><i class="fas fa-phone"></i> +506 8888-8888</li>
+                    <li><i class="fas fa-envelope"></i> info@mwdropship.com</li>
+                    <li><i class="fas fa-map-marker-alt"></i> San José, Costa Rica</li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2025 Marlon Wright's Dropshipping Masterplan. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Tab functionality
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabId = btn.getAttribute('data-tab');
+                
+                // Remove active class from all buttons and contents
+                tabBtns.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+                
+                // Add active class to clicked button and corresponding content
+                btn.classList.add('active');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Scroll animations
+        const animateElements = document.querySelectorAll('.animate-on-scroll');
+
+        function checkScroll() {
+            animateElements.forEach(element => {
+                const elementPosition = element.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                
+                if (elementPosition < windowHeight - 100) {
+                    element.classList.add('visible');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', checkScroll);
+        window.addEventListener('load', checkScroll);
+
+        // Smooth scrolling for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                window.scrollTo({
+                    top: targetElement.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
