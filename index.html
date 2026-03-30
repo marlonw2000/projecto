@@ -595,6 +595,22 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
+  // Force page to start at the very top on load or refresh
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+  window.addEventListener('load', () => {
+    window.scrollTo(0, 0);
+  });
+  // Also handle any potential hash in URL after load (remove # from URL without jumping)
+  if (window.location.hash) {
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+      // Optionally clear hash without causing jump
+      history.pushState("", document.title, window.location.pathname + window.location.search);
+    }, 10);
+  }
+
   // ---------- CUSTOM CURSOR ----------
   const dot = document.querySelector('.cursor-dot');
   const ring = document.querySelector('.cursor-ring');
@@ -721,7 +737,6 @@
     document.querySelectorAll('.mobile-menu a').forEach(link => {
       link.addEventListener('click', () => mobileMenu.classList.remove('open'));
     });
-    // Close when clicking outside
     document.addEventListener('click', (event) => {
       if (!mobileMenu.contains(event.target) && !menuToggle.contains(event.target) && mobileMenu.classList.contains('open')) {
         mobileMenu.classList.remove('open');
