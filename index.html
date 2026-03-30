@@ -4,10 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Stratara Intelligence | Geoeconomic Advisory & Research</title>
-  <!-- Google Fonts + Leaflet + AOS -->
+  <!-- Favicon (ícono de pestaña) usando la imagen del logo -->
+  <link rel="icon" type="image/png" href="https://i.ibb.co/Q3WJ9zpv/Segment-20260330-123138011.png">
+  <link rel="apple-touch-icon" href="https://i.ibb.co/Q3WJ9zpv/Segment-20260330-123138011.png">
+  <!-- Google Fonts + Leaflet CSS -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -25,7 +27,7 @@
 
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: #0a1425; }
-    ::-webkit-scrollbar-thumb { background: #c9a03d; border-radius: 8px; }
+    ::-webkit-scrollbar-thumb { background: #0a84ff; border-radius: 8px; }
 
     /* glass nav */
     .navbar {
@@ -34,7 +36,7 @@
       width: 100%;
       background: rgba(5, 12, 23, 0.85);
       backdrop-filter: blur(18px);
-      border-bottom: 1px solid rgba(201, 160, 61, 0.4);
+      border-bottom: 1px solid rgba(10, 132, 255, 0.4);
       z-index: 1000;
       padding: 1rem 2rem;
       transition: 0.2s;
@@ -52,17 +54,17 @@
       gap: 12px;
       text-decoration: none;
     }
+    /* Reemplazo del cuadro con la "S" por la imagen del logo */
     .logo-icon {
       width: 44px;
       height: 44px;
-      background: linear-gradient(135deg, #0a84ff, #004a9e);
-      border-radius: 14px;
+      border-radius: 12px;
+      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
-      box-shadow: 0 8px 20px -8px #0a84ff;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      background: #0a84ff10;
+      box-shadow: 0 6px 12px -6px rgba(0,0,0,0.4);
     }
     .logo-icon img {
       width: 100%;
@@ -70,15 +72,11 @@
       object-fit: cover;
       display: block;
     }
-    .logo-icon:hover {
-      transform: scale(1.02);
-      box-shadow: 0 10px 25px -5px #c9a03d;
-    }
     .logo-text {
       font-weight: 800;
       font-size: 1.2rem;
       letter-spacing: -0.3px;
-      background: linear-gradient(120deg, #fff, #e6bc7a);
+      background: linear-gradient(120deg, #fff, #9ac0ff);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
@@ -136,7 +134,7 @@
       .menu-btn { display: flex; }
     }
 
-    /* HERO with video */
+    /* HERO with video and enhanced gradient overlay */
     .hero {
       position: relative;
       min-height: 100vh;
@@ -157,7 +155,9 @@
       transform: scale(1.02);
       transition: transform 8s ease;
     }
-    .hero:hover .hero-video { transform: scale(1.05); }
+    .hero:hover .hero-video {
+      transform: scale(1.05);
+    }
     .hero-overlay {
       position: absolute;
       inset: 0;
@@ -244,8 +244,8 @@
       margin-top: 58px;
       flex-wrap: wrap;
     }
-    .stat-digit { font-size: 38px; font-weight: 800; color: #c9a03d; line-height: 1; display: inline-block; }
-    .stat-label { font-size: 11px; letter-spacing: 2px; font-weight: 600; color: #aac4ec; margin-top: 8px; }
+    .stat-digit { font-size: 34px; font-weight: 800; color: #c9a03d; line-height: 1; }
+    .stat-label { font-size: 11px; letter-spacing: 2px; font-weight: 600; color: #aac4ec; }
 
     /* sections */
     section { padding: 100px 24px; }
@@ -265,9 +265,8 @@
       border: 1px solid #1f4170;
       border-radius: 32px;
       padding: 32px 28px;
-      transition: 0.3s;
+      transition: 0.2s;
     }
-    .mv-card:hover { transform: translateY(-6px); border-color: #c9a03d; }
     .mv-card h3 { font-size: 1.7rem; font-weight: 800; margin-bottom: 20px; color: #c9a03d; }
 
     /* services grid */
@@ -290,7 +289,7 @@
     }
     .service-icon { font-size: 42px; margin-bottom: 20px; }
 
-    /* publications */
+    /* publications filter */
     .pub-filters {
       display: flex;
       justify-content: center;
@@ -334,13 +333,11 @@
       flex-wrap: wrap;
       transition: 0.2s;
     }
-    .pub-row:hover { background: #102438; border-color: #c9a03d; transform: translateX(6px); }
+    .pub-row:hover { background: #102438; border-color: #c9a03d; }
     .pub-year { min-width: 70px; font-weight: 800; color: #c9a03d; }
-    .pub-title { font-weight: 700; margin-bottom: 5px; }
-    .pub-sub { font-size: 0.8rem; color: #9ab3df; }
-    .pub-badge { background: #c9a03d20; padding: 4px 12px; border-radius: 50px; font-size: 10px; font-weight: 700; color: #e6bc7a; display: inline-block; margin-left: 12px; }
+    .pub-badge { background: #c9a03d20; padding: 4px 12px; border-radius: 50px; font-size: 10px; font-weight: 700; color: #e6bc7a; }
 
-    /* leadership */
+    /* leadership image section */
     .leader-card {
       background: linear-gradient(145deg, #0e1d32, #09162a);
       border-radius: 48px;
@@ -362,8 +359,8 @@
       max-width: 260px;
       margin: 0 auto 20px;
     }
-    .founder-img img { width: 100%; display: block; aspect-ratio: 1/1; object-fit: cover; background: #0a1f2f; }
-    .tag-group { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; justify-content: center; }
+    .founder-img img { width: 100%; display: block; aspect-ratio: 1/1; object-fit: cover; }
+    .tag-group { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
     .tag { background: #0f2642; border-radius: 30px; padding: 5px 18px; font-size: 12px; font-weight: 600; color: #c9a03d; border: 1px solid #c9a03d30; }
 
     /* contact + map */
@@ -406,7 +403,7 @@
       min-height: 320px;
       background: #102135;
     }
-    #map { height: 100%; width: 100%; min-height: 320px; z-index: 1; background: #0f1f32; }
+    #map { height: 100%; width: 100%; min-height: 320px; z-index: 1; }
     @media (max-width: 860px) { .contact-map-wrapper { grid-template-columns: 1fr; } .leader-flex { padding: 28px; } }
     footer {
       text-align: center;
@@ -416,9 +413,6 @@
       font-size: 13px;
       color: #527aa5;
     }
-    .glow-text { text-shadow: 0 0 8px rgba(10,132,255,0.3); }
-    .hover-lift { transition: transform 0.2s ease, box-shadow 0.2s ease; }
-    .hover-lift:hover { transform: translateY(-5px); }
   </style>
 </head>
 <body>
@@ -426,8 +420,9 @@
 <nav class="navbar">
   <div class="nav-container">
     <a href="#" class="logo">
+      <!-- Logo reemplazado: imagen en lugar de la "S" -->
       <div class="logo-icon">
-        <img src="https://i.ibb.co/B5hfLdc2/Segment-20260330-123138011.png" alt="Stratara Intelligence Logo">
+        <img src="https://i.ibb.co/Q3WJ9zpv/Segment-20260330-123138011.png" alt="Stratara Intelligence Logo">
       </div>
       <div class="logo-text">STRATARA INTELLIGENCE</div>
     </a>
@@ -451,14 +446,14 @@
   <a href="#contact">CONTACT</a>
 </div>
 
-<!-- HERO SECTION -->
+<!-- HERO with VIDEO BACKGROUND -->
 <section id="home" class="hero">
   <video class="hero-video" autoplay loop muted playsinline poster="https://assets.mixkit.co/videos/preview/mixkit-digital-globe-animation-1211-large.mp4">
     <source src="https://assets.mixkit.co/videos/preview/mixkit-digital-globe-animation-1211-large.mp4" type="video/mp4">
     <source src="https://cdn.pixabay.com/video/2020/10/11/52135-472081552_large.mp4" type="video/mp4">
   </video>
   <div class="hero-overlay"></div>
-  <div class="hero-content" data-aos="fade-up" data-aos-duration="1000">
+  <div class="hero-content">
     <div class="badge">✦ GEOECONOMIC FORESIGHT ✦</div>
     <h1>STRATARA<br>INTELLIGENCE, LLC</h1>
     <p class="hero-sub">Global advisory and research specializing in geoeconomic analysis, international business strategy, and cross-cultural market intelligence.</p>
@@ -466,31 +461,31 @@
       <a href="#services" class="btn-primary">Explore Capabilities</a>
       <a href="#contact" class="btn-outline">Connect with us</a>
     </div>
-    <div class="hero-stats" id="statsContainer">
-      <div><span class="stat-digit" id="statPublications">0</span><span class="stat-digit">+</span><div class="stat-label">PEER-REVIEWED PUBLICATIONS</div></div>
-      <div><span class="stat-digit" id="statIndexed">0</span><div class="stat-label">INDEXED IN SCOPUS/WoS</div></div>
-      <div><span class="stat-digit" id="statCitations">0</span><span class="stat-digit">+</span><div class="stat-label">CITATIONS</div></div>
-      <div><span class="stat-digit" id="statCountries">0</span><div class="stat-label">COUNTRIES</div></div>
+    <div class="hero-stats">
+      <div><div class="stat-digit">60+</div><div class="stat-label">PEER-REVIEWED PUBLICATIONS</div></div>
+      <div><div class="stat-digit">42</div><div class="stat-label">INDEXED IN SCOPUS/WoS</div></div>
+      <div><div class="stat-digit">635+</div><div class="stat-label">CITATIONS</div></div>
+      <div><div class="stat-digit">32</div><div class="stat-label">COUNTRIES</div></div>
     </div>
   </div>
 </section>
 
-<!-- MISSION & VISION -->
+<!-- MISSION & VISION SECTION -->
 <section id="mission">
   <div class="container">
-    <div class="section-title" data-aos="fade-up">Guiding Principles</div>
-    <div class="section-sub" data-aos="fade-up" data-aos-delay="100">Strategic clarity for a disruptive global economy</div>
+    <div class="section-title">Guiding Principles</div>
+    <div class="section-sub">Strategic clarity for a disruptive global economy</div>
     <div class="mv-grid">
-      <div class="mv-card" data-aos="flip-left" data-aos-duration="800">
+      <div class="mv-card">
         <h3>Mission</h3>
         <p style="line-height:1.7; color:#cbe1ff;">Stratara Intelligence, LLC empowers leaders to navigate global complexity by delivering rigorous geoeconomic analysis, strategic insight, and cross-cultural intelligence. We advance informed decision-making through interdisciplinary research, international collaboration, and a commitment to thought leadership in a disruptive global economy.</p>
       </div>
-      <div class="mv-card" data-aos="flip-right" data-aos-duration="800">
+      <div class="mv-card">
         <h3>Vision</h3>
         <p style="line-height:1.7; color:#cbe1ff;">To be a globally recognized authority in geoeconomic intelligence and strategic advisory, shaping how institutions, markets, and governments understand and navigate the complexities of an interconnected world.</p>
       </div>
     </div>
-    <div data-aos="zoom-in" data-aos-delay="200" style="text-align:center; margin-top:20px;">
+    <div style="text-align:center; margin-top:20px;">
       <p style="background: #c9a03d10; border-radius: 60px; padding: 16px 24px; max-width: 800px; margin:0 auto; border-left: 4px solid #c9a03d;">
         <strong>Positioning Statement</strong><br>
         Stratara Intelligence, LLC operates at the intersection of geoeconomics, global strategy, and cross-cultural intelligence by delivering research-driven advisory services that enable leaders to navigate complexity, mitigate risk, and capitalize on emerging opportunities in international markets.
@@ -499,205 +494,195 @@
   </div>
 </section>
 
-<!-- SERVICES -->
+<!-- Services -->
 <section id="services">
   <div class="container">
-    <div class="section-title" data-aos="fade-up">Advisory & Research Excellence</div>
-    <div class="section-sub" data-aos="fade-up" data-aos-delay="100">Bridging geoeconomics, psychology, and strategy for multinational resilience.</div>
+    <div class="section-title">Advisory & Research Excellence</div>
+    <div class="section-sub">Bridging geoeconomics, psychology, and strategy for multinational resilience.</div>
     <div class="services-grid">
-      <div class="service-card" data-aos="fade-up" data-aos-delay="0"><div class="service-icon">🌐</div><h3>Geoeconomic Analysis</h3><p>Trade corridors, power shifts, emerging markets — actionable foresight.</p></div>
-      <div class="service-card" data-aos="fade-up" data-aos-delay="100"><div class="service-icon">📊</div><h3>International Business Strategy</h3><p>Market entry, cross-border expansion, competitive positioning.</p></div>
-      <div class="service-card" data-aos="fade-up" data-aos-delay="200"><div class="service-icon">🧭</div><h3>Cross-Cultural Intelligence</h3><p>Multilingual frameworks & cultural agility for global teams.</p></div>
-      <div class="service-card" data-aos="fade-up" data-aos-delay="300"><div class="service-icon">⚡</div><h3>Geopolitical Risk Assessment</h3><p>Navigate sanctions, political volatility, and regulatory shifts.</p></div>
-      <div class="service-card" data-aos="fade-up" data-aos-delay="400"><div class="service-icon">📘</div><h3>Research & Publishing</h3><p>Scopus/WoS indexed handbooks, white papers, scholarly impact.</p></div>
-      <div class="service-card" data-aos="fade-up" data-aos-delay="500"><div class="service-icon">🎓</div><h3>Executive Education</h3><p>Custom workshops on geoeconomics & global leadership.</p></div>
+      <div class="service-card"><div class="service-icon">🌐</div><h3>Geoeconomic Analysis</h3><p>Trade corridors, power shifts, emerging markets — actionable foresight.</p></div>
+      <div class="service-card"><div class="service-icon">📊</div><h3>International Business Strategy</h3><p>Market entry, cross-border expansion, competitive positioning.</p></div>
+      <div class="service-card"><div class="service-icon">🧭</div><h3>Cross-Cultural Intelligence</h3><p>Multilingual frameworks & cultural agility for global teams.</p></div>
+      <div class="service-card"><div class="service-icon">⚡</div><h3>Geopolitical Risk Assessment</h3><p>Navigate sanctions, political volatility, and regulatory shifts.</p></div>
+      <div class="service-card"><div class="service-icon">📘</div><h3>Research & Publishing</h3><p>Scopus/WoS indexed handbooks, white papers, scholarly impact.</p></div>
+      <div class="service-card"><div class="service-icon">🎓</div><h3>Executive Education</h3><p>Custom workshops on geoeconomics & global leadership.</p></div>
     </div>
   </div>
 </section>
 
-<!-- PUBLICATIONS -->
+<!-- Publications -->
 <section id="publications" style="background: #030b16;">
   <div class="container">
-    <div class="section-title" data-aos="fade-up">Scholarly Impact</div>
-    <div class="section-sub" data-aos="fade-up" data-aos-delay="100">60+ peer‑reviewed works · 42 indexed in Scopus or Web of Science · 635+ citations across 12 languages</div>
-    <div class="pub-filters" data-aos="fade-up">
+    <div class="section-title">Scholarly Impact</div>
+    <div class="section-sub">60+ peer‑reviewed works · 42 indexed in Scopus or Web of Science · 635+ citations across 12 languages · Held in elite university libraries worldwide (Harvard, MIT, Princeton, Imperial College, etc.)</div>
+    <div class="pub-filters">
       <button class="filter-btn active" data-filter="all">All</button>
       <button class="filter-btn" data-filter="articles">Journal Articles</button>
       <button class="filter-btn" data-filter="books">Reference Books</button>
     </div>
-    <div id="pubArticles" class="pub-group" data-aos="fade-right">
+    <div id="pubArticles" class="pub-group">
       <div class="pub-section-label">📄 JOURNAL ARTICLES (Double-blind peer review)</div>
-      <div class="pub-row"><div class="pub-year">In Review</div><div><div class="pub-title">The Structural Foundations of 21st Century Power: A Systems Approach to Demography, Geoeconomics, and Maritime Strategy</div><div class="pub-sub">World Politics <span class="pub-badge">Invited Revision</span></div></div></div>
-      <div class="pub-row"><div class="pub-year">In Review</div><div><div class="pub-title">The National Cultural Adaptability Index: A New Metric for Global Economic Foresight</div><div class="pub-sub">Technological Forecasting and Social Change <span class="pub-badge">Under Review</span></div></div></div>
-      <div class="pub-row"><div class="pub-year">2019</div><div><div class="pub-title">Cultural Indoctrination and Management Education Curriculum</div><div class="pub-sub">International Journal of Applied Management Theory and Research, Vol.1, 1-15</div></div></div>
-      <div class="pub-row"><div class="pub-year">2018</div><div><div class="pub-title">Cultural Indoctrination and Open Innovation in International Business</div><div class="pub-sub">Global Journal of Economics and Business Studies, Vol.7, 102-116</div></div></div>
+      <div class="pub-row"><div class="pub-year">In Review</div><div class="pub-body"><div class="pub-title">The Structural Foundations of 21st Century Power: A Systems Approach to Demography, Geoeconomics, and Maritime Strategy</div><div class="pub-sub">World Politics</div></div></div>
+      <div class="pub-row"><div class="pub-year">In Review</div><div class="pub-body"><div class="pub-title">The National Cultural Adaptability Index: A New Metric for Global Economic Foresight</div><div class="pub-sub">Technological Forecasting and Social Change</div></div></div>
+      <div class="pub-row"><div class="pub-year">2019</div><div class="pub-body"><div class="pub-title">Cultural Indoctrination and Management Education Curriculum</div><div class="pub-sub">International Journal of Applied Management Theory and Research, Vol.1, 1-15</div></div></div>
+      <div class="pub-row"><div class="pub-year">2018</div><div class="pub-body"><div class="pub-title">Cultural Indoctrination and Open Innovation in International Business</div><div class="pub-sub">Global Journal of Economics and Business Studies, Vol.7, 102-116</div></div></div>
+      <div class="pub-row"><div class="pub-year">2016</div><div class="pub-body"><div class="pub-title">English as a Foreign Language Teaching and Productivity in Global Hypercompetition (with Fatmanur Kasarci)</div><div class="pub-sub">International Journal of Innovation in the Digital Economy, Vol.7, 47-55</div></div></div>
+      <div class="pub-row"><div class="pub-year">2016</div><div class="pub-body"><div class="pub-title">Cultural Indoctrination in Global Hypercompetition: A Conceptual Framework for International Management</div><div class="pub-sub">International Journal of Productivity Management and Assessment Technologies, Vol.4, 39-51</div></div></div>
     </div>
-    <div id="pubBooks" class="pub-group" data-aos="fade-left">
-      <div class="pub-section-label">📚 REFERENCE BOOKS & HANDBOOKS</div>
-      <div class="pub-row"><div class="pub-year">2022</div><div><div class="pub-title">Handbook of Geoeconomic Strategy in a Multipolar World</div><div class="pub-sub">Palgrave Macmillan · Scopus indexed</div></div></div>
-      <div class="pub-row"><div class="pub-year">2020</div><div><div class="pub-title">Cross-Cultural Intelligence for Global Business Resilience</div><div class="pub-sub">Routledge · WoS Core Collection</div></div></div>
-      <div class="pub-row"><div class="pub-year">2017</div><div><div class="pub-title">Emerging Markets and Geopolitical Risk: Frameworks for Strategic Foresight</div><div class="pub-sub">Emerald Publishing · 180+ citations</div></div></div>
+    <div id="pubBooks" class="pub-group" style="display: block;">
+      <div class="pub-section-label">📚 REFERENCE BOOKS (Scopus / Web of Science indexed)</div>
+      <div class="pub-row"><div class="pub-year">2026</div><div class="pub-body"><div class="pub-title">Critical Economic Implications of Global Demographic Changes (with John Branch)</div><div class="pub-sub">IGI Global</div></div><span class="pub-badge">Scopus</span></div>
+      <div class="pub-row"><div class="pub-year">2026</div><div class="pub-body"><div class="pub-title">Impacts of Geoeconomics and Geopolitics on International Business (with John Branch)</div><div class="pub-sub">IGI Global</div></div><span class="pub-badge">Scopus</span></div>
+      <div class="pub-row"><div class="pub-year">2025</div><div class="pub-body"><div class="pub-title">Organizational Sociology in the Digital Age (with Mehmet Ferhat Ozbek)</div><div class="pub-sub">IGI Global</div></div><span class="pub-badge">Scopus</span></div>
+      <div class="pub-row"><div class="pub-year">2024</div><div class="pub-body"><div class="pub-title">Generative AI and Multifactor Productivity in Business (with Festus Adedoyin)</div><div class="pub-sub">IGI Global</div></div><span class="pub-badge">Scopus</span></div>
+      <div class="pub-row"><div class="pub-year">2023</div><div class="pub-body"><div class="pub-title">Examining Applied Multicultural Industrial and Organizational Psychology (with Angela Even)</div><div class="pub-sub">IGI Global</div></div><span class="pub-badge">Scopus</span></div>
+      <div class="pub-row"><div class="pub-year">2021</div><div class="pub-body"><div class="pub-title">The Marketisation of Higher Education (with John Branch)</div><div class="pub-sub">Palgrave Macmillan / Springer</div></div></div>
+      <div class="pub-row"><div class="pub-year">2017</div><div class="pub-body"><div class="pub-title">Handbook of Research on Human Factors in Contemporary Workforce Development (with Harish Chandan)</div><div class="pub-sub">IGI Global</div></div><span class="pub-badge">WoS+Scopus</span></div>
+      <div class="pub-row"><div class="pub-year">2015</div><div class="pub-body"><div class="pub-title">Handbook of Research on Global Business Opportunities</div><div class="pub-sub">IGI Global</div></div><span class="pub-badge">WoS+Scopus</span></div>
+      <div class="pub-row"><div class="pub-year">2012</div><div class="pub-body"><div class="pub-title">Cultural Variations and Business Performance: Contemporary Globalism</div><div class="pub-sub">IGI Global</div></div><span class="pub-badge">Web of Science</span></div>
     </div>
+    <p style="text-align:center; margin-top:32px; font-size:13px; color:#7fa2cc;">Full bibliography available upon request · 60+ total publications, 42 indexed in Scopus/Web of Science</p>
   </div>
 </section>
 
-<!-- LEADERSHIP / FOUNDER -->
+<!-- LEADERSHIP: Founder with accurate details -->
 <section id="leadership">
   <div class="container">
-    <div class="section-title" data-aos="fade-up">Founder & Managing Director</div>
-    <div class="section-sub" data-aos="fade-up">Distinguished scholar-practitioner in geoeconomics & global strategy</div>
-    <div class="leader-card" data-aos="zoom-in-up">
+    <div style="text-align: center;"><span class="badge">✦ OUR FOUNDER ✦</span></div>
+    <div class="section-title">Bryan Christiansen, MBA, MS**</div>
+    <div class="section-sub">Founder & Chairman · Editor‑in‑Chief · Scholar-Practitioner · MS in I/O Psychology (expected 2029)</div>
+    <div class="leader-card">
       <div class="leader-flex">
         <div class="leader-left">
           <div class="founder-img">
-            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Dr. Alistair Vance">
+            <img src="https://i.ibb.co/jPbsB5TQ/IMG-20251228-WA0006-1.jpg" alt="Bryan Christiansen, Founder" onerror="this.src='https://placehold.co/300x300/0a2a44/white?text=B+C'">
           </div>
-          <div class="tag-group">
-            <span class="tag">PhD (LSE)</span>
-            <span class="tag">Geoeconomics</span>
-            <span class="tag">Ex-UN Advisor</span>
-          </div>
+          <ul style="list-style: none; text-align: left; margin-top: 20px;">
+            <li style="margin-bottom: 10px;">🔹 Founder & Chairman, Stratara Intelligence, LLC</li>
+            <li style="margin-bottom: 10px;">🔹 Editor-in-Chief, IGI Global Scientific Publishing</li>
+            <li style="margin-bottom: 10px;">🔹 Harvard Business Review Advisory Council</li>
+            <li style="margin-bottom: 10px;">🔹 Adjunct Instructor, Southern New Hampshire University</li>
+            <li style="margin-bottom: 10px;">🔹 U.S. Foreign Service Eligibility List (2002,2007) · Top Secret Clearance</li>
+            <li>🌐 Languages: English, Spanish (Advanced), Mandarin Chinese, Japanese, Turkish, Russian</li>
+          </ul>
         </div>
-        <div style="flex:2;">
-          <h2 style="font-size: 2rem; color: #c9a03d;">Dr. Alistair Vance</h2>
-          <p style="margin-top: 16px; line-height: 1.6;">Dr. Vance brings over 20 years of experience at the intersection of international political economy, strategic intelligence, and cross-cultural advisory. Former senior fellow at the Centre for Geopolitics, his work has shaped policy frameworks for G20 institutions and multinational boards. He is the author of 4 reference books and 30+ peer-reviewed articles, with a focus on systemic risk and economic statecraft.</p>
-          <p style="margin-top: 20px;">Frequent keynote speaker at WTO, World Economic Forum, and leading business schools. Fluent in 5 languages, Dr. Vance leads Stratara’s research agenda with a commitment to actionable, data-driven foresight.</p>
+        <div class="leader-right">
+          <p style="margin-bottom: 16px; line-height: 1.7;">Multilingual scholar-practitioner with 60 peer‑reviewed publications across geoeconomics, industrial/organizational psychology, international business, and workforce development. 42 publications indexed in Scopus or Web of Science (70% of total), receiving over 635 citations across 12 languages in journal articles, master's theses, and doctoral dissertations.</p>
+          <p style="margin-bottom: 16px;">Professional experience spans business, consulting, and higher education across 32 countries with Global 500 firms including IBM, Cargill, Siemens, and Coca‑Cola. Publications distributed to elite university libraries worldwide: Harvard, MIT, Princeton, McGill, Imperial College London, University of Michigan, and Waseda.</p>
+          <p style="margin-bottom: 16px; font-size:0.9rem; background:#c9a03d10; padding:12px; border-radius:20px;"><strong>MS in Industrial/Organizational Psychology</strong> (in progress, expected 2029) · Southern New Hampshire University · MBA (4.0 GPA) Capella University · BS Marketing, University of the State of New York</p>
+          <div class="tag-group">
+            <span class="tag">Geoeconomics</span><span class="tag">Cross-Cultural I/O</span><span class="tag">Geopolitical Risk</span>
+            <span class="tag">Workforce Development</span><span class="tag">International Strategy</span><span class="tag">Organizational Sociology</span>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- CONTACT + MAP -->
-<section id="contact">
+<!-- CONTACT + MAP (correct phone) -->
+<section id="contact" style="background: #030b16;">
   <div class="container">
-    <div class="section-title" data-aos="fade-up">Global Engagement</div>
-    <div class="section-sub" data-aos="fade-up">Washington, D.C. · New York · London · Singapore</div>
+    <div class="section-title">Connect & Engage</div>
+    <div class="section-sub">Let’s discuss geoeconomic intelligence, research collaborations, or advisory mandates.</div>
     <div class="contact-map-wrapper">
-      <div class="contact-info" data-aos="fade-right">
-        <div class="info-item"><div class="info-icon">📍</div><div class="info-detail"><span>Stratara Intelligence, LLC<br>1725 I St NW, Suite 300, Washington, D.C. 20006</span></div></div>
-        <div class="info-item"><div class="info-icon">📞</div><div class="info-detail"><a href="tel:+12025551234">+1 (202) 555-1234</a></div></div>
-        <div class="info-item"><div class="info-icon">✉️</div><div class="info-detail"><a href="mailto:insights@stratara.com">insights@stratara.com</a></div></div>
-        <div class="info-item"><div class="info-icon">🌐</div><div class="info-detail"><a href="#">www.strataraintelligence.com</a></div></div>
-        <p style="margin-top: 24px; font-size: 13px; border-top: 1px solid #1f4170; padding-top: 20px;">For strategic inquiries, research collaborations, or speaking engagements.</p>
+      <div class="contact-info">
+        <div class="info-item">
+          <div class="info-icon">📧</div>
+          <div class="info-detail">
+            <strong>Email</strong><br>
+            <a href="mailto:strataraintel@proton.me" id="emailLink">strataraintel@proton.me</a>
+            <span style="display: block; font-size: 12px; color:#7ba0c5;">Encrypted & secure</span>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon">📞</div>
+          <div class="info-detail">
+            <strong>Phone</strong><br>
+            <a href="tel:+12522680484" id="phoneLink">(252) 268-0484</a>
+            <span style="font-size:12px;">Click to call (direct line)</span>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon">📍</div>
+          <div class="info-detail">
+            <strong>Headquarters</strong><br>
+            <span>760 Cody Lane, Kinston, NC 28504, USA</span>
+            <span style="font-size:12px;">Advisory & Research Divisions</span>
+          </div>
+        </div>
+        <div style="margin-top: 20px;">
+          <a href="mailto:strataraintel@proton.me" class="btn-primary" style="display: inline-block;">Send an Inquiry →</a>
+        </div>
       </div>
-      <div class="map-container" data-aos="fade-left">
-        <div id="map"></div>
+      <div class="map-container">
+        <div id="map" style="height: 100%; min-height: 320px; border-radius: 28px;"></div>
       </div>
     </div>
   </div>
 </section>
 
 <footer>
-  <p>© 2025 Stratara Intelligence, LLC — Geoeconomic Advisory & Research. All rights reserved.</p>
-  <p style="margin-top: 12px;">Intelligence beyond borders | Data-driven foresight</p>
+  <p>© <span id="year"></span> Stratara Intelligence, LLC — Kinston, North Carolina, USA — Advisory & Research Divisions</p>
+  <p style="margin-top: 8px;">🌍 Intelligence without borders</p>
 </footer>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
-  // AOS init
-  AOS.init({ duration: 800, once: true, mirror: false });
+  // Mobile menu
+  const menuToggle = document.getElementById('menuToggle');
+  const mobileMenu = document.getElementById('mobileMenu');
+  menuToggle?.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+  document.querySelectorAll('.mobile-menu a').forEach(link => link.addEventListener('click', () => mobileMenu.classList.remove('open')));
 
-  // Stats counter
-  const stats = {
-    publications: 62,
-    indexed: 42,
-    citations: 635,
-    countries: 12
-  };
-  function animateStat(id, target) {
-    let current = 0;
-    const step = Math.ceil(target / 50);
-    const elem = document.getElementById(id);
-    if (!elem) return;
-    const interval = setInterval(() => {
-      current += step;
-      if (current >= target) {
-        elem.innerText = target;
-        clearInterval(interval);
-      } else {
-        elem.innerText = current;
-      }
-    }, 25);
-  }
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        animateStat('statPublications', stats.publications);
-        animateStat('statIndexed', stats.indexed);
-        animateStat('statCitations', stats.citations);
-        animateStat('statCountries', stats.countries);
-        observer.disconnect();
-      }
-    });
-  }, { threshold: 0.4 });
-  const heroStats = document.getElementById('statsContainer');
-  if (heroStats) observer.observe(heroStats);
-
-  // Leaflet Map (Washington D.C.)
-  const map = L.map('map').setView([38.9072, -77.0369], 13);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> & CartoDB',
-    subdomains: 'abcd',
-    maxZoom: 18,
-    style: 'light'
-  }).addTo(map);
-  const customIcon = L.divIcon({ html: '<div style="background: #c9a03d; width: 28px; height: 28px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 10px #c9a03d;"></div>', iconSize: [28,28], className: 'custom-marker' });
-  L.marker([38.9072, -77.0369], { icon: customIcon }).addTo(map).bindPopup('<b>Stratara Intelligence HQ</b><br>Washington, D.C.').openPopup();
-
-  // Publication filters
-  const filterBtns = document.querySelectorAll('.filter-btn');
+  // Publication filter
   const articlesDiv = document.getElementById('pubArticles');
   const booksDiv = document.getElementById('pubBooks');
-  function filterPublications(type) {
-    if (type === 'all') {
-      articlesDiv.style.display = 'block';
-      booksDiv.style.display = 'block';
-    } else if (type === 'articles') {
-      articlesDiv.style.display = 'block';
-      booksDiv.style.display = 'none';
-    } else if (type === 'books') {
-      articlesDiv.style.display = 'none';
-      booksDiv.style.display = 'block';
-    }
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  function filterPubs(type) {
+    if (type === 'all') { articlesDiv.style.display = ''; booksDiv.style.display = ''; }
+    else if (type === 'articles') { articlesDiv.style.display = ''; booksDiv.style.display = 'none'; }
+    else { articlesDiv.style.display = 'none'; booksDiv.style.display = ''; }
   }
   filterBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       filterBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      filterPublications(btn.getAttribute('data-filter'));
+      filterPubs(btn.getAttribute('data-filter'));
     });
   });
+  filterPubs('all');
 
-  // Mobile menu toggle
-  const menuToggle = document.getElementById('menuToggle');
-  const mobileMenu = document.getElementById('mobileMenu');
-  menuToggle.addEventListener('click', () => {
-    if (mobileMenu.style.display === 'flex') mobileMenu.style.display = 'none';
-    else mobileMenu.style.display = 'flex';
-  });
-  document.querySelectorAll('.mobile-menu a').forEach(link => {
-    link.addEventListener('click', () => mobileMenu.style.display = 'none');
-  });
-
-  // Active nav highlight on scroll
-  const sections = document.querySelectorAll('section[id]');
+  // Active nav highlight
+  const sections = document.querySelectorAll('section');
   window.addEventListener('scroll', () => {
     let current = '';
-    const scrollY = window.scrollY;
-    sections.forEach(section => {
-      const sectionTop = section.offsetTop - 120;
-      const sectionHeight = section.offsetHeight;
-      if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
-        current = section.getAttribute('id');
-      }
+    sections.forEach(sec => {
+      const top = sec.offsetTop - 150;
+      if (pageYOffset >= top) current = sec.getAttribute('id');
     });
-    document.querySelectorAll('.nav-links a, .mobile-menu a').forEach(link => {
-      link.classList.remove('active');
-      if (link.getAttribute('href') === `#${current}`) link.classList.add('active');
+    document.querySelectorAll('.nav-links a').forEach(a => {
+      a.classList.remove('active');
+      if (a.getAttribute('href') === `#${current}`) a.classList.add('active');
     });
   });
+  document.getElementById('year').innerText = new Date().getFullYear();
+
+  // Leaflet map - Kinston, NC
+  const map = L.map('map').setView([35.2672, -77.5816], 13);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> & CartoDB',
+    subdomains: 'abcd',
+    maxZoom: 18,
+  }).addTo(map);
+  L.marker([35.2672, -77.5816]).addTo(map)
+    .bindPopup('<b>Stratara Intelligence, LLC</b><br/>760 Cody Lane, Kinston, NC 28504')
+    .openPopup();
+  L.circle([35.2672, -77.5816], { radius: 600, color: '#c9a03d', weight: 1.5, fillOpacity: 0.1 }).addTo(map);
+
+  // Analytics
+  document.getElementById('phoneLink')?.addEventListener('click', () => console.log('[API] Click-to-call: +12522680484'));
+  document.getElementById('emailLink')?.addEventListener('click', () => console.log('[API] Email engagement tracked'));
 </script>
 </body>
 </html>
