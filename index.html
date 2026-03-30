@@ -1,805 +1,322 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Marlon Wright's Facibiliad plan dropshippin</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary: #2c3e50;
-            --secondary: #e74c3c;
-            --accent: #3498db;
-            --light: #ecf0f1;
-            --dark: #2c3e50;
-            --success: #2ecc71;
-            --warning: #f39c12;
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            --transition: all 0.3s ease;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: #f5f7fa;
-            color: var(--dark);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        /* Animated Header */
-        header {
-            background: linear-gradient(135deg, var(--primary), var(--dark));
-            color: white;
-            padding: 3rem 0;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            animation: gradientShift 8s infinite alternate;
-        }
-
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 100% 50%; }
-        }
-
-        .logo {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            display: inline-block;
-            background: linear-gradient(to right, #f39c12, #e74c3c);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        /* Navigation */
-        nav {
-            background: white;
-            box-shadow: var(--shadow);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .nav-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-        }
-
-        .nav-links a {
-            color: var(--dark);
-            text-decoration: none;
-            font-weight: 600;
-            transition: var(--transition);
-            position: relative;
-        }
-
-        .nav-links a:hover {
-            color: var(--secondary);
-        }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -5px;
-            left: 0;
-            background-color: var(--secondary);
-            transition: var(--transition);
-        }
-
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-
-        /* Hero Section */
-        .hero {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 4rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-            position: relative;
-        }
-
-        .hero-content {
-            flex: 1;
-            padding-right: 2rem;
-            animation: fadeInLeft 1s ease-out;
-        }
-
-        @keyframes fadeInLeft {
-            from { opacity: 0; transform: translateX(-50px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        .hero-image {
-            flex: 1;
-            position: relative;
-            animation: fadeInRight 1s ease-out;
-        }
-
-        @keyframes fadeInRight {
-            from { opacity: 0; transform: translateX(50px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        .hero-image img {
-            width: 100%;
-            border-radius: 10px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-            transition: var(--transition);
-        }
-
-        .hero-image:hover img {
-            transform: scale(1.02);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
-        }
-
-        .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 1.5rem;
-            color: var(--primary);
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            color: #555;
-        }
-
-        .btn {
-            display: inline-block;
-            background: var(--secondary);
-            color: white;
-            padding: 0.8rem 1.8rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: var(--transition);
-            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
-        }
-
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
-            background: #c0392b;
-        }
-
-        /* Features Section */
-        .features {
-            padding: 5rem 2rem;
-            background: white;
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 3rem;
-            position: relative;
-        }
-
-        .section-title h2 {
-            font-size: 2.5rem;
-            color: var(--primary);
-            display: inline-block;
-        }
-
-        .section-title h2::after {
-            content: '';
-            position: absolute;
-            width: 80px;
-            height: 4px;
-            background: var(--secondary);
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-radius: 2px;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .feature-card {
-            background: white;
-            border-radius: 10px;
-            padding: 2rem;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            text-align: center;
-            border-top: 4px solid var(--accent);
-        }
-
-        .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-        }
-
-        .feature-icon {
-            font-size: 3rem;
-            color: var(--accent);
-            margin-bottom: 1.5rem;
-        }
-
-        .feature-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--primary);
-        }
-
-        /* Business Plan Section */
-        .business-plan {
-            padding: 5rem 2rem;
-            background: #f9f9f9;
-        }
-
-        .plan-container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .plan-tabs {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .tab-btn {
-            padding: 0.8rem 1.5rem;
-            background: white;
-            border: none;
-            border-radius: 30px;
-            margin: 0.5rem;
-            cursor: pointer;
-            font-weight: 600;
-            transition: var(--transition);
-            box-shadow: var(--shadow);
-        }
-
-        .tab-btn.active {
-            background: var(--secondary);
-            color: white;
-        }
-
-        .tab-content {
-            display: none;
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .plan-card {
-            background: white;
-            border-radius: 10px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: var(--shadow);
-        }
-
-        .plan-card h3 {
-            color: var(--primary);
-            margin-bottom: 1rem;
-            font-size: 1.8rem;
-        }
-
-        .plan-card ul {
-            list-style-position: inside;
-            margin-bottom: 1.5rem;
-        }
-
-        .plan-card li {
-            margin-bottom: 0.5rem;
-            position: relative;
-            padding-left: 1.5rem;
-        }
-
-        .plan-card li::before {
-            content: '✓';
-            color: var(--success);
-            position: absolute;
-            left: 0;
-            font-weight: bold;
-        }
-
-        /* Proven Models Section */
-        .proven-models {
-            padding: 5rem 2rem;
-            background: white;
-        }
-
-        .models-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-            gap: 2rem;
-        }
-
-        .model-card {
-            display: flex;
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            transition: var(--transition);
-        }
-
-        .model-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
-        }
-
-        .model-card img {
-            width: 200px;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .model-content {
-            padding: 2rem;
-            flex: 1;
-        }
-
-        .model-content h3 {
-            color: var(--primary);
-            margin-bottom: 1rem;
-        }
-
-        .model-content p {
-            margin-bottom: 1.5rem;
-            color: #555;
-        }
-
-        /* CTA Section */
-        .cta {
-            padding: 5rem 2rem;
-            text-align: center;
-            background: var(--accent);
-            color: white;
-        }
-
-        .cta h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .cta p {
-            font-size: 1.2rem;
-            max-width: 700px;
-            margin: 0 auto 2rem;
-        }
-
-        .btn-light {
-            background: white;
-            color: var(--accent);
-        }
-
-        .btn-light:hover {
-            background: #f1f1f1;
-            color: var(--accent);
-        }
-
-        /* Footer */
-        footer {
-            background: var(--dark);
-            color: white;
-            padding: 3rem 2rem;
-        }
-
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-        }
-
-        .footer-col h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-            position: relative;
-            padding-bottom: 10px;
-        }
-
-        .footer-col h3::after {
-            content: '';
-            position: absolute;
-            width: 50px;
-            height: 3px;
-            background: var(--secondary);
-            bottom: 0;
-            left: 0;
-        }
-
-        .footer-col ul {
-            list-style: none;
-        }
-
-        .footer-col li {
-            margin-bottom: 0.8rem;
-        }
-
-        .footer-col a {
-            color: #ddd;
-            text-decoration: none;
-            transition: var(--transition);
-        }
-
-        .footer-col a:hover {
-            color: var(--accent);
-            padding-left: 5px;
-        }
-
-        .social-links {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .social-links a {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
-            color: white;
-            transition: var(--transition);
-        }
-
-        .social-links a:hover {
-            background: var(--accent);
-            transform: translateY(-3px);
-        }
-
-        .copyright {
-            text-align: center;
-            margin-top: 3rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid rgba(255,255,255,0.1);
-        }
-
-        /* Animations */
-        .animate-on-scroll {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-
-        .animate-on-scroll.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .hero-content {
-                padding-right: 0;
-                margin-bottom: 2rem;
-            }
-            
-            .nav-links {
-                display: none;
-            }
-            
-            .hero h1 {
-                font-size: 2.2rem;
-            }
-
-            .models-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .model-card {
-                flex-direction: column;
-            }
-            
-            .model-card img {
-                width: 100%;
-                height: 200px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Stratara Intelligence, LLC | Geoeconomic Advisory</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; background: #07101f; color: #eef2ff; overflow-x: hidden; line-height: 1.5; }
+    ::-webkit-scrollbar { width: 5px; background: #0a1425; }
+    ::-webkit-scrollbar-thumb { background: #1f4a7c; border-radius: 5px; }
+
+    /* Import Inter font (clean, modern) */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800;14..32,900&display=swap');
+
+    /* layout & utils */
+    .container { max-width: 1280px; margin: 0 auto; padding: 0 28px; }
+    .text-gradient { background: linear-gradient(135deg, #FFFFFF, #7bb3ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .section-pad { padding: 96px 0; }
+    @media (max-width: 768px) { .section-pad { padding: 64px 0; } }
+
+    /* navigation */
+    nav { position: fixed; top: 0; left: 0; width: 100%; background: rgba(7, 16, 31, 0.92); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(59, 130, 246, 0.25); z-index: 1000; padding: 14px 0; transition: 0.2s; }
+    .nav-flex { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+    .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .logo-icon { width: 40px; height: 40px; background: linear-gradient(145deg, #0a84ff, #0059c2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 20px; color: white; box-shadow: 0 6px 12px -6px rgba(0,0,0,0.4); }
+    .logo-text { font-weight: 800; font-size: 16px; letter-spacing: 1.2px; color: #fff; }
+    .logo-text span { color: #0a84ff; }
+    .nav-links { display: flex; gap: 2rem; }
+    .nav-links a { color: #b9c7e0; text-decoration: none; font-size: 14px; font-weight: 600; transition: 0.2s; letter-spacing: 0.3px; padding: 6px 0; border-bottom: 2px solid transparent; }
+    .nav-links a:hover, .nav-links a.active { color: #0a84ff; border-bottom-color: #0a84ff; }
+    .menu-btn { display: none; background: none; border: none; cursor: pointer; flex-direction: column; gap: 5px; padding: 5px; }
+    .menu-btn span { width: 24px; height: 2px; background: #eef2ff; border-radius: 3px; transition: 0.2s; }
+    .mobile-nav { display: none; position: fixed; top: 70px; left: 0; width: 100%; background: #07101fe6; backdrop-filter: blur(20px); border-bottom: 1px solid #1f3a5c; flex-direction: column; padding: 20px 28px; z-index: 999; gap: 16px; }
+    .mobile-nav a { color: #eef2ff; font-weight: 600; text-decoration: none; font-size: 16px; padding: 8px 0; border-bottom: 1px solid #1f3a5c; }
+    @media (max-width: 780px) { .nav-links { display: none; } .menu-btn { display: flex; } .mobile-nav.open { display: flex; } }
+
+    /* Hero section with subtle rings */
+    .hero { min-height: 90vh; display: flex; align-items: center; position: relative; overflow: hidden; background: radial-gradient(circle at 10% 30%, #0a1f36, #030a16); }
+    .rings-bg { position: absolute; inset: 0; pointer-events: none; display: flex; align-items: center; justify-content: center; }
+    .ring { position: absolute; border-radius: 50%; border: 1px solid rgba(10,132,255,0.18); animation: float 6s infinite alternate; }
+    .ring1 { width: 220px; height: 220px; animation-delay: 0s; }
+    .ring2 { width: 380px; height: 380px; animation-delay: 0.8s; }
+    .ring3 { width: 540px; height: 540px; animation-delay: 1.5s; }
+    .ring4 { width: 700px; height: 700px; animation-delay: 2.2s; }
+    @keyframes float { 0% { opacity: 0.2; transform: scale(0.96); } 100% { opacity: 0.5; transform: scale(1.04); } }
+    .hero-content { position: relative; z-index: 2; text-align: center; max-width: 860px; margin: 0 auto; padding: 40px 24px; }
+    .hero-badge { background: rgba(10,132,255,0.12); border: 1px solid rgba(10,132,255,0.4); display: inline-block; border-radius: 40px; padding: 6px 20px; font-size: 12px; font-weight: 700; letter-spacing: 2px; color: #0a84ff; margin-bottom: 28px; }
+    h1 { font-size: clamp(2.6rem, 8vw, 4.8rem); font-weight: 900; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 20px; }
+    .hero-sub { color: #9aafcf; font-size: 1.1rem; max-width: 620px; margin: 0 auto 40px; }
+    .btn-group { display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary { background: linear-gradient(95deg, #0a84ff, #0066dd); border: none; padding: 14px 34px; border-radius: 40px; font-weight: 700; color: white; transition: 0.2s; box-shadow: 0 8px 18px -8px #0a84ff40; cursor: pointer; text-decoration: none; display: inline-block; font-size: 15px; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 22px -8px #0a84ff70; }
+    .btn-outline { background: transparent; border: 1px solid #2d5380; padding: 14px 34px; border-radius: 40px; font-weight: 700; color: #c0d4ff; transition: 0.2s; text-decoration: none; display: inline-block; font-size: 15px; }
+    .btn-outline:hover { background: rgba(10,132,255,0.1); border-color: #0a84ff; color: white; }
+    .stats-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 48px; margin-top: 64px; }
+    .stat-item .stat-number { font-size: 34px; font-weight: 800; color: #0a84ff; line-height: 1; }
+    .stat-item .stat-label { font-size: 11px; letter-spacing: 2px; font-weight: 600; color: #5f7ea0; margin-top: 8px; }
+
+    /* sections */
+    .section-title { font-size: clamp(1.9rem, 4vw, 2.6rem); font-weight: 800; margin-bottom: 12px; text-align: center; }
+    .section-subhead { text-align: center; color: #8aa1c2; max-width: 700px; margin: 0 auto 48px; font-size: 1rem; }
+    .tag-sm { display: inline-block; background: rgba(10,132,255,0.1); border-radius: 30px; padding: 5px 16px; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; color: #0a84ff; margin-bottom: 18px; text-align: center; }
+    .services-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 28px; margin-top: 24px; }
+    .service-card { background: rgba(13, 31, 53, 0.6); backdrop-filter: blur(4px); border: 1px solid #1f3d61; border-radius: 28px; padding: 32px 24px; transition: all 0.25s; }
+    .service-card:hover { border-color: #0a84ff; transform: translateY(-6px); background: rgba(18, 40, 66, 0.7); }
+    .service-icon { font-size: 36px; margin-bottom: 22px; }
+    .service-card h3 { font-size: 1.25rem; margin-bottom: 12px; font-weight: 700; }
+    .service-card p { color: #95aacf; font-size: 0.9rem; line-height: 1.6; }
+
+    /* publications */
+    .pub-filters { display: flex; gap: 12px; justify-content: center; margin-bottom: 48px; flex-wrap: wrap; }
+    .filter-btn { background: #0f1d31; border: 1px solid #284466; color: #bfd1f0; padding: 8px 24px; border-radius: 40px; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .filter-btn.active, .filter-btn:hover { background: #0a84ff; border-color: #0a84ff; color: white; }
+    .pub-group { margin-bottom: 50px; }
+    .pub-section-label { font-size: 12px; letter-spacing: 2px; font-weight: 800; color: #0a84ff; margin: 32px 0 20px 0; border-left: 4px solid #0a84ff; padding-left: 16px; }
+    .pub-row { display: flex; gap: 18px; background: rgba(10, 30, 48, 0.5); border: 1px solid #203a58; border-radius: 20px; padding: 16px 22px; margin-bottom: 12px; transition: 0.15s; flex-wrap: wrap; align-items: flex-start; }
+    .pub-row:hover { background: #10273f; border-color: #3a6ea5; }
+    .pub-year { min-width: 70px; font-weight: 800; color: #0a84ff; font-size: 13px; }
+    .pub-body { flex: 1; }
+    .pub-title { font-weight: 600; color: #eef4ff; margin-bottom: 6px; font-size: 0.95rem; }
+    .pub-sub { font-size: 0.75rem; color: #6882a8; }
+    .pub-badge { background: rgba(10,132,255,0.2); padding: 4px 12px; border-radius: 50px; font-size: 10px; font-weight: 700; color: #7bb3ff; white-space: nowrap; }
+
+    /* leadership card with image */
+    .leader-wrapper { max-width: 980px; margin: 0 auto; background: #0c1a2c; border: 1px solid #2a4b77; border-radius: 36px; overflow: hidden; transition: 0.2s; }
+    .leader-inner { display: flex; flex-wrap: wrap; gap: 32px; padding: 40px; align-items: flex-start; }
+    .leader-left { flex: 1.2; min-width: 220px; }
+    .founder-img-frame { width: 100%; max-width: 260px; margin-bottom: 24px; border-radius: 28px; overflow: hidden; border: 3px solid #0a84ff; box-shadow: 0 20px 30px -15px black; background: #071524; }
+    .founder-img-frame img { width: 100%; height: auto; display: block; object-fit: cover; aspect-ratio: 1 / 1; transition: 0.2s; }
+    .leader-list { list-style: none; margin-top: 16px; }
+    .leader-list li { font-size: 0.85rem; margin-bottom: 12px; color: #b7cbee; display: flex; align-items: center; gap: 8px; }
+    .leader-list li::before { content: "▹"; color: #0a84ff; font-size: 12px; }
+    .leader-right { flex: 2; }
+    .leader-bio { color: #bdd1f0; margin-bottom: 18px; line-height: 1.7; font-size: 0.95rem; }
+    .tag-cloud { display: flex; flex-wrap: wrap; gap: 10px; margin: 24px 0 0; }
+    .tag { background: #10263f; border-radius: 50px; padding: 6px 16px; font-size: 11px; font-weight: 700; color: #9bc0ff; border: 1px solid #244e7a; }
+
+    /* contact */
+    .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; margin: 48px 0 40px; }
+    .contact-card { background: #0e1d33; border-radius: 24px; padding: 28px 18px; text-align: center; border: 1px solid #26446b; transition: 0.2s; }
+    .contact-card:hover { border-color: #0a84ff; transform: translateY(-3px); }
+    .contact-icon { font-size: 32px; margin-bottom: 16px; }
+    .contact-label { font-weight: 700; font-size: 12px; letter-spacing: 2px; color: #0a84ff; margin-bottom: 8px; }
+    .contact-value { color: #e0ecff; text-decoration: none; font-size: 15px; font-weight: 500; }
+    .contact-value:hover { color: #0a84ff; }
+
+    footer { background: #030a15; border-top: 1px solid #1c3550; text-align: center; padding: 40px 20px; margin-top: 40px; }
+    footer p { color: #4e6e8e; font-size: 13px; }
+    @media (max-width: 700px) { .leader-inner { padding: 28px; } .founder-img-frame { max-width: 200px; margin: 0 auto 20px; } .leader-left { text-align: center; } }
+  </style>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <div class="logo">Marlon Wright's Dropshipping Masterplan</div>
-            <p>Transformando importaciones en ganancias desde China a Costa Rica</p>
+
+<!-- Navigation -->
+<nav>
+  <div class="container nav-flex">
+    <a href="#" class="logo">
+      <div class="logo-icon">S</div>
+      <div class="logo-text">STRATARA <span>INTELLIGENCE</span></div>
+    </a>
+    <div class="nav-links">
+      <a href="#home" class="active">HOME</a>
+      <a href="#services">SERVICES</a>
+      <a href="#publications">PUBLICATIONS</a>
+      <a href="#leadership">LEADERSHIP</a>
+      <a href="#contact">CONTACT</a>
+    </div>
+    <button class="menu-btn" id="menuBtn" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="mobile-nav" id="mobileNav">
+  <a href="#home">HOME</a>
+  <a href="#services">SERVICES</a>
+  <a href="#publications">PUBLICATIONS</a>
+  <a href="#leadership">LEADERSHIP</a>
+  <a href="#contact">CONTACT</a>
+</div>
+
+<!-- Hero Section (Home) -->
+<section id="home" class="hero">
+  <div class="rings-bg">
+    <div class="ring ring1"></div><div class="ring ring2"></div><div class="ring ring3"></div><div class="ring ring4"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge">ADVISORY & RESEARCH DIVISIONS</div>
+    <h1>STRATARA <span class="text-gradient">INTELLIGENCE</span><br>GEOECONOMIC EDGE</h1>
+    <p class="hero-sub">Global advisory firm specializing in geoeconomic analysis, international business strategy, and cross‑cultural intelligence — empowering leaders in 32+ countries.</p>
+    <div class="btn-group">
+      <a href="#services" class="btn-primary">Explore Services</a>
+      <a href="#contact" class="btn-outline">Let's Connect</a>
+    </div>
+    <div class="stats-row">
+      <div class="stat-item"><div class="stat-number">60+</div><div class="stat-label">PEER-REVIEWED PUBLICATIONS</div></div>
+      <div class="stat-item"><div class="stat-number">635+</div><div class="stat-label">ACADEMIC CITATIONS</div></div>
+      <div class="stat-item"><div class="stat-number">32</div><div class="stat-label">COUNTRIES EXPERIENCE</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Services Section -->
+<section id="services" class="section-pad">
+  <div class="container">
+    <div style="text-align:center;"><span class="tag-sm">WHAT WE DELIVER</span></div>
+    <h2 class="section-title">Strategic Intelligence & Advisory</h2>
+    <p class="section-subhead">Cutting-edge research and actionable frameworks for multinationals, governments, and academic institutions.</p>
+    <div class="services-grid">
+      <div class="service-card"><div class="service-icon">🌍</div><h3>Geoeconomic Analysis</h3><p>Mapping global power shifts, trade corridors, and emerging market dynamics to future-proof your strategy.</p></div>
+      <div class="service-card"><div class="service-icon">📈</div><h3>International Business Strategy</h3><p>Market entry, cross-border M&A, and competitive positioning in high-growth regions.</p></div>
+      <div class="service-card"><div class="service-icon">🧠</div><h3>Cross-Cultural Intelligence</h3><p>Multilingual frameworks and cultural indoctrination programs for global teams.</p></div>
+      <div class="service-card"><div class="service-icon">⚖️</div><h3>Geopolitical Risk Assessment</h3><p>Navigate political instability, sanctions, and regulatory shifts with actionable foresight.</p></div>
+      <div class="service-card"><div class="service-icon">📚</div><h3>Research & Publishing</h3><p>Scopus/WoS indexed reference books, white papers, and scholarly impact.</p></div>
+      <div class="service-card"><div class="service-icon">🎓</div><h3>Executive Education</h3><p>Custom workshops on geoeconomics, cultural adaptability, and global leadership.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- Publications Section -->
+<section id="publications" class="section-pad" style="background:#050d18;">
+  <div class="container">
+    <div style="text-align:center;"><span class="tag-sm">SCHOLARLY IMPACT</span></div>
+    <h2 class="section-title">Selected Publications</h2>
+    <p class="section-subhead">60+ peer‑reviewed works · 42 indexed in Scopus/WoS · 12 languages · Global university distribution (Harvard, MIT, Oxford, etc.)</p>
+    <div class="pub-filters">
+      <button class="filter-btn active" data-filter="all">All Publications</button>
+      <button class="filter-btn" data-filter="articles">Journal Articles</button>
+      <button class="filter-btn" data-filter="books">Reference Books</button>
+    </div>
+    <div id="pubContainer">
+      <!-- Journal articles group -->
+      <div class="pub-group" id="groupArticles">
+        <div class="pub-section-label">📄 JOURNAL ARTICLES (double-blind peer-reviewed)</div>
+        <div class="pub-row"><div class="pub-year">In Review</div><div class="pub-body"><div class="pub-title">The Structural Foundations of 21st Century Power: A Systems Approach to Demography, Geoeconomics, and Maritime Strategy</div><div class="pub-sub">World Politics</div></div></div>
+        <div class="pub-row"><div class="pub-year">In Review</div><div class="pub-body"><div class="pub-title">The National Cultural Adaptability Index: A New Metric for Global Economic Foresight</div><div class="pub-sub">Technological Forecasting and Social Change</div></div></div>
+        <div class="pub-row"><div class="pub-year">2019</div><div class="pub-body"><div class="pub-title">Cultural Indoctrination and Management Education Curriculum</div><div class="pub-sub">Intl Journal of Applied Management Theory and Research, Vol.1, 1–15</div></div></div>
+        <div class="pub-row"><div class="pub-year">2018</div><div class="pub-body"><div class="pub-title">Cultural Indoctrination and Open Innovation in International Business</div><div class="pub-sub">Global Journal of Economics and Business Studies, Vol.7, 102–116</div></div></div>
+        <div class="pub-row"><div class="pub-year">2016</div><div class="pub-body"><div class="pub-title">English as a Foreign Language Teaching and Productivity in Global Hypercompetition (with Fatmanur Kasarci)</div><div class="pub-sub">Intl Journal of Innovation in the Digital Economy, Vol.7, 47–55</div></div></div>
+        <div class="pub-row"><div class="pub-year">2016</div><div class="pub-body"><div class="pub-title">Cultural Indoctrination in Global Hypercompetition: A Conceptual Framework</div><div class="pub-sub">Intl Journal of Productivity Management, Vol.4, 39–51</div></div></div>
+        <div class="pub-row"><div class="pub-year">2013</div><div class="pub-body"><div class="pub-title">Diversity Management in Transcultural Organizations (with Hakan Sezerel)</div><div class="pub-sub">Global Business Perspectives, Vol.1, 132–143</div></div></div>
+      </div>
+      <!-- Reference books group -->
+      <div class="pub-group" id="groupBooks">
+        <div class="pub-section-label">📘 REFERENCE BOOKS (Scopus/WoS indexed & major publishers)</div>
+        <div class="pub-row"><div class="pub-year">2027**</div><div class="pub-body"><div class="pub-title">Cross-Cultural Perspectives on Industrial and Organizational Psychology (with John Branch)</div><div class="pub-sub">IGI Global</div></div><span class="pub-badge">Forthcoming</span></div>
+        <div class="pub-row"><div class="pub-year">2026</div><div class="pub-body"><div class="pub-title">Critical Economic Implications of Global Demographic Changes (with John Branch)</div><div class="pub-sub">IGI Global</div></div><span class="pub-badge">Scopus</span></div>
+        <div class="pub-row"><div class="pub-year">2026</div><div class="pub-body"><div class="pub-title">Impacts of Geoeconomics and Geopolitics on International Business (with John Branch)</div><div class="pub-sub">IGI Global</div></div><span class="pub-badge">Scopus</span></div>
+        <div class="pub-row"><div class="pub-year">2025</div><div class="pub-body"><div class="pub-title">Organizational Sociology in the Digital Age (with Mehmet Ferhat Ozbek)</div><div class="pub-sub">IGI Global</div></div><span class="pub-badge">Scopus</span></div>
+        <div class="pub-row"><div class="pub-year">2024</div><div class="pub-body"><div class="pub-title">Generative AI and Multifactor Productivity in Business (with Festus Adedoyin)</div><div class="pub-sub">IGI Global</div></div><span class="pub-badge">Scopus</span></div>
+        <div class="pub-row"><div class="pub-year">2023</div><div class="pub-body"><div class="pub-title">Examining Applied Multicultural Industrial and Organizational Psychology (with Angela Even)</div><div class="pub-sub">IGI Global</div></div><span class="pub-badge">Scopus</span></div>
+        <div class="pub-row"><div class="pub-year">2021</div><div class="pub-body"><div class="pub-title">The Marketisation of Higher Education (with John Branch)</div><div class="pub-sub">Palgrave Macmillan / Springer</div></div></div>
+        <div class="pub-row"><div class="pub-year">2017</div><div class="pub-body"><div class="pub-title">Handbook of Research on Human Factors in Contemporary Workforce Development (with Harish Chandan)</div><div class="pub-sub">IGI Global</div></div><span class="pub-badge">WoS+Scopus</span></div>
+        <div class="pub-row"><div class="pub-year">2015</div><div class="pub-body"><div class="pub-title">Handbook of Research on Global Business Opportunities</div><div class="pub-sub">IGI Global</div></div><span class="pub-badge">WoS+Scopus</span></div>
+        <!-- condensed representation but authoritative -->
+      </div>
+    </div>
+    <p style="text-align:center; margin-top:32px; font-size:13px; color:#527a9e;">* Full bibliography available upon request · 42+ titles indexed in Scopus or Web of Science</p>
+  </div>
+</section>
+
+<!-- LEADERSHIP SECTION: OUR FOUNDER WITH EXTERNAL IMAGE (ibb.co link as requested) -->
+<section id="leadership" class="section-pad">
+  <div class="container">
+    <div style="text-align:center;"><span class="tag-sm">OUR FOUNDER</span></div>
+    <h2 class="section-title">Bryan Christiansen, MBA, MS**</h2>
+    <p class="section-subhead">Scholar‑practitioner · Editor‑in‑Chief · Global advisor across six continents</p>
+    <div class="leader-wrapper">
+      <div class="leader-inner">
+        <div class="leader-left">
+          <!-- PHOTO PLACEMENT: exactly the image from the given ibb.co link -->
+          <div class="founder-img-frame">
+            <img src="https://i.ibb.co/jPbsB5TQ/IMG-20251228-WA0006-1.jpg" alt="Founder portrait - Bryan Christiansen" onerror="this.onerror=null; this.src='https://placehold.co/300x300/0a2a44/white?text=BC+Photo';">
+          </div>
+          <ul class="leader-list">
+            <li>Founder & Chairman, Stratara Intelligence</li>
+            <li>Editor-in-Chief, IGI Global Scientific Publishing</li>
+            <li>Adjunct Instructor, Southern New Hampshire University</li>
+            <li>Harvard Business Review Advisory Council</li>
+            <li>Academy of Management</li>
+            <li>Resided in 7 foreign nations · 32 countries experience</li>
+            <li>U.S. Foreign Service Eligibility (2002,2007) · Top Secret Clearance</li>
+          </ul>
+          <div style="margin-top: 20px; font-size: 13px; color: #8aa3c4;"><strong>Languages:</strong> English, Spanish (Advanced), Mandarin Chinese, Japanese, Turkish, Russian</div>
         </div>
-    </header>
-
-    <nav>
-        <div class="nav-container">
-            <div class="logo-small">MW Dropship</div>
-            <div class="nav-links">
-                <a href="#inicio">Inicio</a>
-                <a href="#plan">Plan de Negocio</a>
-                <a href="#ventajas">Ventajas</a>
-                <a href="#modelos">Modelos</a>
-                <a href="#contacto">Contacto</a>
-            </div>
+        <div class="leader-right">
+          <p class="leader-bio">Multilingual scholar-practitioner with 60+ peer-reviewed publications across geoeconomics, I/O psychology, and international business. 42 publications indexed in Scopus or Web of Science, surpassing 635 citations in 12 languages across doctoral dissertations and journals.</p>
+          <p class="leader-bio">Professional experience spans Global 500 firms: IBM, Cargill, Siemens, and Coca‑Cola, alongside extensive consulting across 32 countries. Publications are distributed to elite libraries including Harvard, MIT, Princeton, McGill, Imperial College London.</p>
+          <p class="leader-bio">Keynote speaker at international conferences in Turkey, Georgia, Russia, and the UK. Current editorial leadership includes over 40 major reference books and multiple journal volumes.</p>
+          <div class="tag-cloud">
+            <span class="tag">Geoeconomics</span><span class="tag">International Business</span><span class="tag">Cross-Cultural Intelligence</span>
+            <span class="tag">I/O Psychology</span><span class="tag">Workforce Development</span><span class="tag">Geopolitical Risk</span>
+          </div>
         </div>
-    </nav>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <section class="hero" id="inicio">
-        <div class="hero-content">
-            <h1>Revoluciona tu Negocio de Dropshipping</h1>
-            <p>Descubre cómo comprar productos directamente de fábricas en China con márgenes de ganancia del 100-150%, evitando intermediarios como Temu. Sistema probado para el mercado costarricense.</p>
-            <a href="#plan" class="btn">Ver Plan Completo</a>
-        </div>
-        <div class="hero-image">
-            <img src="https://images.unsplash.com/photo-1556740738-b6a63e27c4df?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Dropshipping desde China">
-        </div>
-    </section>
+<!-- Contact Section -->
+<section id="contact" class="section-pad" style="background:#050d18;">
+  <div class="container">
+    <div style="text-align:center;"><span class="tag-sm">CONNECT WITH US</span></div>
+    <h2 class="section-title">Engage Stratara Intelligence</h2>
+    <p class="section-subhead">Advisory, research collaborations, executive briefings — we look forward to hearing from you.</p>
+    <div class="contact-grid">
+      <div class="contact-card"><div class="contact-icon">📧</div><div class="contact-label">EMAIL</div><a href="mailto:strataraintel@proton.me" class="contact-value">strataraintel@proton.me</a></div>
+      <div class="contact-card"><div class="contact-icon">📞</div><div class="contact-label">PHONE</div><a href="tel:+12522680484" class="contact-value">(252) 268-0484</a></div>
+      <div class="contact-card"><div class="contact-icon">📍</div><div class="contact-label">ADDRESS</div><span class="contact-value">760 Cody Lane, Kinston, NC 28504, USA</span></div>
+    </div>
+    <div style="text-align:center;"><a href="mailto:strataraintel@proton.me" class="btn-primary" style="padding: 14px 36px;">Send Inquiry →</a></div>
+  </div>
+</section>
 
-    <section class="features" id="ventajas">
-        <div class="section-title">
-            <h2>Ventajas Clave</h2>
-        </div>
-        <div class="features-grid">
-            <div class="feature-card animate-on-scroll">
-                <div class="feature-icon">
-                    <i class="fas fa-money-bill-wave"></i>
-                </div>
-                <h3>Márgenes 100-150%</h3>
-                <p>Compra directo de fábricas en 1688.com con precios 30-60% más bajos que Temu</p>
-            </div>
-            <div class="feature-card animate-on-scroll">
-                <div class="feature-icon">
-                    <i class="fas fa-shipping-fast"></i>
-                </div>
-                <h3>Envíos Rápidos</h3>
-                <p>Stock local en CR para entregas en 2-3 días vs 15-30 días de la competencia</p>
-            </div>
-            <div class="feature-card animate-on-scroll">
-                <div class="feature-icon">
-                    <i class="fas fa-chart-line"></i>
-                </div>
-                <h3>ROI en 2-3 Meses</h3>
-                <p>Modelo probado con recuperación de inversión rápida y crecimiento escalable</p>
-            </div>
-        </div>
-    </section>
+<footer>
+  <p>© <span id="year"></span> Stratara Intelligence, LLC — Kinston, North Carolina, USA — Global Advisory & Research Divisions</p>
+</footer>
 
-    <section class="business-plan" id="plan">
-        <div class="section-title">
-            <h2>Plan de Negocio Detallado</h2>
-        </div>
-        <div class="plan-container">
-            <div class="plan-tabs">
-                <button class="tab-btn active" data-tab="tab1">Fase 1</button>
-                <button class="tab-btn" data-tab="tab2">Fase 2</button>
-                <button class="tab-btn" data-tab="tab3">Fase 3</button>
-                <button class="tab-btn" data-tab="tab4">Finanzas</button>
-            </div>
+<script>
+  // Mobile menu toggle
+  const menuBtn = document.getElementById('menuBtn');
+  const mobileNav = document.getElementById('mobileNav');
+  menuBtn?.addEventListener('click', () => { mobileNav.classList.toggle('open'); });
+  document.querySelectorAll('.mobile-nav a').forEach(link => { link.addEventListener('click', () => { mobileNav.classList.remove('open'); }); });
 
-            <div id="tab1" class="tab-content active">
-                <div class="plan-card animate-on-scroll">
-                    <h3>Selección de Productos (Meses 1-2)</h3>
-                    <ul>
-                        <li>Identificar 10-15 productos de alta demanda en CR</li>
-                        <li>Pedir muestras a 3-5 proveedores en 1688.com</li>
-                        <li>Evaluar calidad, tiempo de envío y reacción de clientes</li>
-                        <li>Productos recomendados: herramientas eléctricas, gadgets tecnológicos, organizadores</li>
-                    </ul>
-                </div>
-                <div class="plan-card animate-on-scroll">
-                    <h3>Primer Pedido (Mes 3)</h3>
-                    <ul>
-                        <li>Compra inicial de 500-1,000 unidades (₡3.5M-₡6M)</li>
-                        <li>Envío marítimo para reducir costos (45-60 días)</li>
-                        <li>Configuración de tienda online con Django</li>
-                        <li>Lanzamiento con campaña Meta Ads (₡500K inicial)</li>
-                    </ul>
-                </div>
-            </div>
+  // Publication filter logic
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const groupArticles = document.getElementById('groupArticles');
+  const groupBooks = document.getElementById('groupBooks');
+  function setFilter(type) {
+    if (type === 'all') { groupArticles.style.display = ''; groupBooks.style.display = ''; }
+    else if (type === 'articles') { groupArticles.style.display = ''; groupBooks.style.display = 'none'; }
+    else if (type === 'books') { groupArticles.style.display = 'none'; groupBooks.style.display = ''; }
+  }
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filterVal = btn.getAttribute('data-filter');
+      setFilter(filterVal);
+    });
+  });
+  setFilter('all');
 
-            <div id="tab2" class="tab-content">
-                <div class="plan-card animate-on-scroll">
-                    <h3>Optimización (Meses 4-6)</h3>
-                    <ul>
-                        <li>Automatizar procesos con ERP básico</li>
-                        <li>Contratar asistente logístico (₡1.2M/mes)</li>
-                        <li>Expandir a 50 SKUs basado en ventas</li>
-                        <li>Implementar programa de fidelización</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div id="tab3" class="tab-content">
-                <div class="plan-card animate-on-scroll">
-                    <h3>Expansión (Meses 7-12)</h3>
-                    <ul>
-                        <li>Almacén pequeño en CR (₡300K/mes)</li>
-                        <li>Equipo de 3 personas</li>
-                        <li>Importación directa de contenedores</li>
-                        <li>Expansión a otros mercados centroamericanos</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div id="tab4" class="tab-content">
-                <div class="plan-card animate-on-scroll">
-                    <h3>Proyección Financiera</h3>
-                    <ul>
-                        <li>Inversión inicial: ₡6M-₡10M</li>
-                        <li>Ventas mensuales (Fase 1): 450 unidades = ₡9M</li>
-                        <li>Ganancia neta: ₡3.5M/mes</li>
-                        <li>ROI: 2-3 meses</li>
-                    </ul>
-                </div>
-                <div class="plan-card animate-on-scroll">
-                    <h3>Estructura de Costos</h3>
-                    <ul>
-                        <li>Producto + envío + impuestos: ₡8,000/unidad</li>
-                        <li>Precio venta: ₡18,000-₡25,000</li>
-                        <li>Ganancia bruta: ₡10,000-₡17,000/unidad</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="proven-models" id="modelos">
-        <div class="section-title">
-            <h2>Modelos Comprobados</h2>
-        </div>
-        <div class="models-container">
-            <div class="model-card animate-on-scroll">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Tienda Online">
-                <div class="model-content">
-                    <h3>Tienda Online de Éxito</h3>
-                    <p>InnoShop CR ha implementado este modelo con resultados extraordinarios. Explora su catálogo de herramientas y artículos diversos.</p>
-                    <a href="https://innoshopcr.com/collections/herramientasymas?sfnsn=wa" class="btn" target="_blank">Visitar Tienda</a>
-                </div>
-            </div>
-            <div class="model-card animate-on-scroll">
-                <img src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Página de Facebook">
-                <div class="model-content">
-                    <h3>Ventas por Facebook</h3>
-                    <p>Perfil de Facebook que utiliza el sistema de pedidos directos y entrega rápida con inventario local. Miles de seguidores y ventas diarias.</p>
-                    <a href="#" class="btn" target="_blank">Ver Perfil</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="cta" id="contacto">
-        <h2>¿Listo para Transformar tu Negocio?</h2>
-        <p>Descarga nuestro manual completo con lista de proveedores verificados, plantillas de contratos y estrategias de marketing probadas.</p>
-        <a href="chrome-native://pdf/link?url=content%3A%2F%2Fmedia%2Fexternal%2Fdownloads%2F1000061884" class="btn btn-light">Descargar Guía Gratis</a>
-    </section>
-
-    <footer>
-        <div class="footer-container">
-            <div class="footer-col">
-                <h3>MW Dropshipping</h3>
-                <p>Sistema probado para importar y vender productos desde China al mercado costarricense con altos márgenes.</p>
-                <div class="social-links">
-                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-whatsapp"></i></a>
-                </div>
-            </div>
-            <div class="footer-col">
-                <h3>Enlaces</h3>
-                <ul>
-                    <li><a href="#inicio">Inicio</a></li>
-                    <li><a href="#plan">Plan de Negocio</a></li>
-                    <li><a href="#ventajas">Ventajas</a></li>
-                    <li><a href="#modelos">Modelos</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h3>Contacto</h3>
-                <ul>
-                    <li><i class="fas fa-phone"></i> +506 8888-8888</li>
-                    <li><i class="fas fa-envelope"></i> info@mwdropship.com</li>
-                    <li><i class="fas fa-map-marker-alt"></i> San José, Costa Rica</li>
-                </ul>
-            </div>
-        </div>
-        <div class="copyright">
-            <p>&copy; 2025 Marlon Wright's Dropshipping Masterplan. Todos los derechos reservados.</p>
-        </div>
-    </footer>
-
-    <script>
-        // Tab functionality
-        const tabBtns = document.querySelectorAll('.tab-btn');
-        const tabContents = document.querySelectorAll('.tab-content');
-
-        tabBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const tabId = btn.getAttribute('data-tab');
-                
-                // Remove active class from all buttons and contents
-                tabBtns.forEach(btn => btn.classList.remove('active'));
-                tabContents.forEach(content => content.classList.remove('active'));
-                
-                // Add active class to clicked button and corresponding content
-                btn.classList.add('active');
-                document.getElementById(tabId).classList.add('active');
-            });
-        });
-
-        // Scroll animations
-        const animateElements = document.querySelectorAll('.animate-on-scroll');
-
-        function checkScroll() {
-            animateElements.forEach(element => {
-                const elementPosition = element.getBoundingClientRect().top;
-                const windowHeight = window.innerHeight;
-                
-                if (elementPosition < windowHeight - 100) {
-                    element.classList.add('visible');
-                }
-            });
-        }
-
-        window.addEventListener('scroll', checkScroll);
-        window.addEventListener('load', checkScroll);
-
-        // Smooth scrolling for navigation
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                const targetId = this.getAttribute('href');
-                const targetElement = document.querySelector(targetId);
-                
-                window.scrollTo({
-                    top: targetElement.offsetTop - 80,
-                    behavior: 'smooth'
-                });
-            });
-        });
-    </script>
+  // Active nav highlight on scroll
+  const sections = ['home', 'services', 'publications', 'leadership', 'contact'];
+  window.addEventListener('scroll', () => {
+    let current = 'home';
+    for (let s of sections) {
+      const el = document.getElementById(s);
+      if (el && window.scrollY >= el.offsetTop - 150) current = s;
+    }
+    document.querySelectorAll('.nav-links a').forEach(a => {
+      a.classList.remove('active');
+      if (a.getAttribute('href') === `#${current}`) a.classList.add('active');
+    });
+  });
+  document.getElementById('year').innerText = new Date().getFullYear();
+</script>
 </body>
 </html>
