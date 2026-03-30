@@ -1,256 +1,568 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Stratara Intelligence, LLC | Geoeconomic Advisory</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Stratara Intelligence | Geoeconomic Advisory & Research</title>
+  <!-- Google Fonts + Leaflet CSS + AOS Library -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body { font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; background: #07101f; color: #eef2ff; overflow-x: hidden; line-height: 1.5; }
-    ::-webkit-scrollbar { width: 5px; background: #0a1425; }
-    ::-webkit-scrollbar-thumb { background: #1f4a7c; border-radius: 5px; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-    /* Import Inter font (clean, modern) */
-    @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800;14..32,900&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #050c17;
+      color: #eef3ff;
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
 
-    /* layout & utils */
-    .container { max-width: 1280px; margin: 0 auto; padding: 0 28px; }
-    .text-gradient { background: linear-gradient(135deg, #FFFFFF, #7bb3ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
-    .section-pad { padding: 96px 0; }
-    @media (max-width: 768px) { .section-pad { padding: 64px 0; } }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0a1425; }
+    ::-webkit-scrollbar-thumb { background: #0a84ff; border-radius: 8px; }
 
-    /* navigation */
-    nav { position: fixed; top: 0; left: 0; width: 100%; background: rgba(7, 16, 31, 0.92); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(59, 130, 246, 0.25); z-index: 1000; padding: 14px 0; transition: 0.2s; }
-    .nav-flex { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
-    .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-    .logo-icon { width: 40px; height: 40px; background: linear-gradient(145deg, #0a84ff, #0059c2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 20px; color: white; box-shadow: 0 6px 12px -6px rgba(0,0,0,0.4); }
-    .logo-text { font-weight: 800; font-size: 16px; letter-spacing: 1.2px; color: #fff; }
-    .logo-text span { color: #0a84ff; }
-    .nav-links { display: flex; gap: 2rem; }
-    .nav-links a { color: #b9c7e0; text-decoration: none; font-size: 14px; font-weight: 600; transition: 0.2s; letter-spacing: 0.3px; padding: 6px 0; border-bottom: 2px solid transparent; }
-    .nav-links a:hover, .nav-links a.active { color: #0a84ff; border-bottom-color: #0a84ff; }
-    .menu-btn { display: none; background: none; border: none; cursor: pointer; flex-direction: column; gap: 5px; padding: 5px; }
-    .menu-btn span { width: 24px; height: 2px; background: #eef2ff; border-radius: 3px; transition: 0.2s; }
-    .mobile-nav { display: none; position: fixed; top: 70px; left: 0; width: 100%; background: #07101fe6; backdrop-filter: blur(20px); border-bottom: 1px solid #1f3a5c; flex-direction: column; padding: 20px 28px; z-index: 999; gap: 16px; }
-    .mobile-nav a { color: #eef2ff; font-weight: 600; text-decoration: none; font-size: 16px; padding: 8px 0; border-bottom: 1px solid #1f3a5c; }
-    @media (max-width: 780px) { .nav-links { display: none; } .menu-btn { display: flex; } .mobile-nav.open { display: flex; } }
+    /* glass nav */
+    .navbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(5, 12, 23, 0.85);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(10, 132, 255, 0.4);
+      z-index: 1000;
+      padding: 1rem 2rem;
+      transition: 0.2s;
+    }
+    .nav-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+    .logo-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #0a84ff, #004a9e);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 22px;
+      color: white;
+      box-shadow: 0 8px 20px -8px #0a84ff;
+    }
+    .logo-text {
+      font-weight: 800;
+      font-size: 1.2rem;
+      letter-spacing: -0.3px;
+      background: linear-gradient(120deg, #fff, #9ac0ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
+    .nav-links a {
+      color: #cbd5ff;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: 0.2s;
+      position: relative;
+    }
+    .nav-links a:after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #c9a03d;
+      transition: 0.2s;
+    }
+    .nav-links a:hover:after, .nav-links a.active:after { width: 100%; }
+    .nav-links a.active { color: #c9a03d; }
+    .menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      flex-direction: column;
+      gap: 6px;
+      cursor: pointer;
+    }
+    .menu-btn span { width: 26px; height: 2px; background: #eef3ff; border-radius: 2px; }
+    .mobile-menu {
+      display: none;
+      background: #050c17e6;
+      backdrop-filter: blur(20px);
+      position: fixed;
+      top: 75px;
+      left: 0;
+      width: 100%;
+      flex-direction: column;
+      padding: 1.5rem;
+      gap: 1rem;
+      z-index: 999;
+      border-bottom: 1px solid #c9a03d;
+    }
+    .mobile-menu a { color: white; font-weight: 600; text-decoration: none; }
+    @media (max-width: 780px) {
+      .nav-links { display: none; }
+      .menu-btn { display: flex; }
+    }
 
-    /* Hero section with subtle rings */
-    .hero { min-height: 90vh; display: flex; align-items: center; position: relative; overflow: hidden; background: radial-gradient(circle at 10% 30%, #0a1f36, #030a16); }
-    .rings-bg { position: absolute; inset: 0; pointer-events: none; display: flex; align-items: center; justify-content: center; }
-    .ring { position: absolute; border-radius: 50%; border: 1px solid rgba(10,132,255,0.18); animation: float 6s infinite alternate; }
-    .ring1 { width: 220px; height: 220px; animation-delay: 0s; }
-    .ring2 { width: 380px; height: 380px; animation-delay: 0.8s; }
-    .ring3 { width: 540px; height: 540px; animation-delay: 1.5s; }
-    .ring4 { width: 700px; height: 700px; animation-delay: 2.2s; }
-    @keyframes float { 0% { opacity: 0.2; transform: scale(0.96); } 100% { opacity: 0.5; transform: scale(1.04); } }
-    .hero-content { position: relative; z-index: 2; text-align: center; max-width: 860px; margin: 0 auto; padding: 40px 24px; }
-    .hero-badge { background: rgba(10,132,255,0.12); border: 1px solid rgba(10,132,255,0.4); display: inline-block; border-radius: 40px; padding: 6px 20px; font-size: 12px; font-weight: 700; letter-spacing: 2px; color: #0a84ff; margin-bottom: 28px; }
-    h1 { font-size: clamp(2.6rem, 8vw, 4.8rem); font-weight: 900; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 20px; }
-    .hero-sub { color: #9aafcf; font-size: 1.1rem; max-width: 620px; margin: 0 auto 40px; }
-    .btn-group { display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; }
-    .btn-primary { background: linear-gradient(95deg, #0a84ff, #0066dd); border: none; padding: 14px 34px; border-radius: 40px; font-weight: 700; color: white; transition: 0.2s; box-shadow: 0 8px 18px -8px #0a84ff40; cursor: pointer; text-decoration: none; display: inline-block; font-size: 15px; }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 22px -8px #0a84ff70; }
-    .btn-outline { background: transparent; border: 1px solid #2d5380; padding: 14px 34px; border-radius: 40px; font-weight: 700; color: #c0d4ff; transition: 0.2s; text-decoration: none; display: inline-block; font-size: 15px; }
-    .btn-outline:hover { background: rgba(10,132,255,0.1); border-color: #0a84ff; color: white; }
-    .stats-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 48px; margin-top: 64px; }
-    .stat-item .stat-number { font-size: 34px; font-weight: 800; color: #0a84ff; line-height: 1; }
-    .stat-item .stat-label { font-size: 11px; letter-spacing: 2px; font-weight: 600; color: #5f7ea0; margin-top: 8px; }
+    /* HERO with video */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .hero-video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      filter: brightness(0.45) contrast(1.05) saturate(1.2);
+      transform: scale(1.02);
+      transition: transform 8s ease;
+    }
+    .hero:hover .hero-video { transform: scale(1.05); }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 30% 20%, rgba(0,30,60,0.65), rgba(5,12,23,0.9));
+      z-index: 1;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 3;
+      max-width: 950px;
+      margin: 0 auto;
+      text-align: center;
+      padding: 2rem;
+      animation: fadeUp 1s ease-out;
+    }
+    @keyframes fadeUp {
+      0% { opacity: 0; transform: translateY(30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .badge {
+      background: rgba(10,132,255,0.2);
+      border: 1px solid rgba(201,160,61,0.6);
+      border-radius: 60px;
+      padding: 6px 20px;
+      font-size: 0.7rem;
+      letter-spacing: 2.5px;
+      font-weight: 800;
+      display: inline-block;
+      margin-bottom: 1.5rem;
+      color: #c9a03d;
+      backdrop-filter: blur(4px);
+    }
+    h1 {
+      font-size: clamp(2.8rem, 8vw, 5rem);
+      font-weight: 900;
+      line-height: 1.1;
+      background: linear-gradient(135deg, #FFFFFF, #c9a03d);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    .hero-sub {
+      font-size: 1.1rem;
+      color: #d0e2ff;
+      max-width: 700px;
+      margin: 1.5rem auto;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    }
+    .btn-group {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      background: linear-gradient(100deg, #0a84ff, #0052b3);
+      border: none;
+      padding: 14px 34px;
+      border-radius: 40px;
+      font-weight: 700;
+      color: white;
+      transition: 0.3s;
+      text-decoration: none;
+      box-shadow: 0 8px 20px rgba(10,132,255,0.4);
+    }
+    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 30px -6px #0a84ff; }
+    .btn-outline {
+      background: rgba(10,132,255,0.1);
+      backdrop-filter: blur(8px);
+      border: 1px solid #c9a03d;
+      padding: 14px 34px;
+      border-radius: 40px;
+      font-weight: 700;
+      color: #e3f0ff;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+    .btn-outline:hover { background: rgba(201,160,61,0.15); border-color: #c9a03d; color: #c9a03d; }
+    .hero-stats {
+      display: flex;
+      gap: 48px;
+      justify-content: center;
+      margin-top: 58px;
+      flex-wrap: wrap;
+    }
+    .stat-digit { font-size: 38px; font-weight: 800; color: #c9a03d; line-height: 1; display: inline-block; }
+    .stat-label { font-size: 11px; letter-spacing: 2px; font-weight: 600; color: #aac4ec; margin-top: 8px; }
 
     /* sections */
-    .section-title { font-size: clamp(1.9rem, 4vw, 2.6rem); font-weight: 800; margin-bottom: 12px; text-align: center; }
-    .section-subhead { text-align: center; color: #8aa1c2; max-width: 700px; margin: 0 auto 48px; font-size: 1rem; }
-    .tag-sm { display: inline-block; background: rgba(10,132,255,0.1); border-radius: 30px; padding: 5px 16px; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; color: #0a84ff; margin-bottom: 18px; text-align: center; }
-    .services-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 28px; margin-top: 24px; }
-    .service-card { background: rgba(13, 31, 53, 0.6); backdrop-filter: blur(4px); border: 1px solid #1f3d61; border-radius: 28px; padding: 32px 24px; transition: all 0.25s; }
-    .service-card:hover { border-color: #0a84ff; transform: translateY(-6px); background: rgba(18, 40, 66, 0.7); }
-    .service-icon { font-size: 36px; margin-bottom: 22px; }
-    .service-card h3 { font-size: 1.25rem; margin-bottom: 12px; font-weight: 700; }
-    .service-card p { color: #95aacf; font-size: 0.9rem; line-height: 1.6; }
+    section { padding: 100px 24px; }
+    .container { max-width: 1280px; margin: 0 auto; }
+    .section-title { font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 800; text-align: center; margin-bottom: 12px; }
+    .section-sub { text-align: center; color: #8aa4cd; max-width: 700px; margin: 0 auto 50px; }
+
+    /* mission/vision cards */
+    .mv-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 32px;
+      margin-bottom: 40px;
+    }
+    .mv-card {
+      background: linear-gradient(145deg, #0e1d32, #09162a);
+      border: 1px solid #1f4170;
+      border-radius: 32px;
+      padding: 32px 28px;
+      transition: 0.3s;
+    }
+    .mv-card:hover { transform: translateY(-6px); border-color: #c9a03d; }
+    .mv-card h3 { font-size: 1.7rem; font-weight: 800; margin-bottom: 20px; color: #c9a03d; }
+
+    /* services grid */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 28px;
+    }
+    .service-card {
+      background: linear-gradient(145deg, #0e1d32, #09162a);
+      border: 1px solid #1f4170;
+      border-radius: 32px;
+      padding: 32px 28px;
+      transition: all 0.3s ease;
+    }
+    .service-card:hover {
+      border-color: #c9a03d;
+      transform: translateY(-8px);
+      box-shadow: 0 20px 30px -12px rgba(0,0,0,0.5);
+    }
+    .service-icon { font-size: 42px; margin-bottom: 20px; }
 
     /* publications */
-    .pub-filters { display: flex; gap: 12px; justify-content: center; margin-bottom: 48px; flex-wrap: wrap; }
-    .filter-btn { background: #0f1d31; border: 1px solid #284466; color: #bfd1f0; padding: 8px 24px; border-radius: 40px; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; }
-    .filter-btn.active, .filter-btn:hover { background: #0a84ff; border-color: #0a84ff; color: white; }
-    .pub-group { margin-bottom: 50px; }
-    .pub-section-label { font-size: 12px; letter-spacing: 2px; font-weight: 800; color: #0a84ff; margin: 32px 0 20px 0; border-left: 4px solid #0a84ff; padding-left: 16px; }
-    .pub-row { display: flex; gap: 18px; background: rgba(10, 30, 48, 0.5); border: 1px solid #203a58; border-radius: 20px; padding: 16px 22px; margin-bottom: 12px; transition: 0.15s; flex-wrap: wrap; align-items: flex-start; }
-    .pub-row:hover { background: #10273f; border-color: #3a6ea5; }
-    .pub-year { min-width: 70px; font-weight: 800; color: #0a84ff; font-size: 13px; }
-    .pub-body { flex: 1; }
-    .pub-title { font-weight: 600; color: #eef4ff; margin-bottom: 6px; font-size: 0.95rem; }
-    .pub-sub { font-size: 0.75rem; color: #6882a8; }
-    .pub-badge { background: rgba(10,132,255,0.2); padding: 4px 12px; border-radius: 50px; font-size: 10px; font-weight: 700; color: #7bb3ff; white-space: nowrap; }
+    .pub-filters {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      background: #0e1d32;
+      border: 1px solid #2a4e7a;
+      padding: 8px 24px;
+      border-radius: 40px;
+      font-weight: 600;
+      cursor: pointer;
+      color: #cbe1ff;
+      transition: 0.2s;
+    }
+    .filter-btn.active, .filter-btn:hover {
+      background: #c9a03d;
+      border-color: #c9a03d;
+      color: #050c17;
+    }
+    .pub-group { margin-bottom: 30px; }
+    .pub-section-label {
+      font-size: 12px;
+      letter-spacing: 2px;
+      font-weight: 800;
+      color: #c9a03d;
+      border-left: 4px solid #c9a03d;
+      padding-left: 18px;
+      margin: 28px 0 18px;
+    }
+    .pub-row {
+      background: #0a1729b3;
+      border: 1px solid #1e3a5a;
+      border-radius: 20px;
+      padding: 16px 20px;
+      margin-bottom: 12px;
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      transition: 0.2s;
+    }
+    .pub-row:hover { background: #102438; border-color: #c9a03d; transform: translateX(6px); }
+    .pub-year { min-width: 70px; font-weight: 800; color: #c9a03d; }
+    .pub-badge { background: #c9a03d20; padding: 4px 12px; border-radius: 50px; font-size: 10px; font-weight: 700; color: #e6bc7a; }
 
-    /* leadership card with image */
-    .leader-wrapper { max-width: 980px; margin: 0 auto; background: #0c1a2c; border: 1px solid #2a4b77; border-radius: 36px; overflow: hidden; transition: 0.2s; }
-    .leader-inner { display: flex; flex-wrap: wrap; gap: 32px; padding: 40px; align-items: flex-start; }
-    .leader-left { flex: 1.2; min-width: 220px; }
-    .founder-img-frame { width: 100%; max-width: 260px; margin-bottom: 24px; border-radius: 28px; overflow: hidden; border: 3px solid #0a84ff; box-shadow: 0 20px 30px -15px black; background: #071524; }
-    .founder-img-frame img { width: 100%; height: auto; display: block; object-fit: cover; aspect-ratio: 1 / 1; transition: 0.2s; }
-    .leader-list { list-style: none; margin-top: 16px; }
-    .leader-list li { font-size: 0.85rem; margin-bottom: 12px; color: #b7cbee; display: flex; align-items: center; gap: 8px; }
-    .leader-list li::before { content: "▹"; color: #0a84ff; font-size: 12px; }
-    .leader-right { flex: 2; }
-    .leader-bio { color: #bdd1f0; margin-bottom: 18px; line-height: 1.7; font-size: 0.95rem; }
-    .tag-cloud { display: flex; flex-wrap: wrap; gap: 10px; margin: 24px 0 0; }
-    .tag { background: #10263f; border-radius: 50px; padding: 6px 16px; font-size: 11px; font-weight: 700; color: #9bc0ff; border: 1px solid #244e7a; }
+    /* leadership */
+    .leader-card {
+      background: linear-gradient(145deg, #0e1d32, #09162a);
+      border-radius: 48px;
+      border: 1px solid #2a4e7a;
+      overflow: hidden;
+    }
+    .leader-flex {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      padding: 44px;
+    }
+    .leader-left { flex: 1; min-width: 240px; text-align: center; }
+    .founder-img {
+      border-radius: 32px;
+      overflow: hidden;
+      border: 3px solid #c9a03d;
+      box-shadow: 0 20px 30px -12px black;
+      max-width: 260px;
+      margin: 0 auto 20px;
+    }
+    .founder-img img { width: 100%; display: block; aspect-ratio: 1/1; object-fit: cover; }
+    .tag-group { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+    .tag { background: #0f2642; border-radius: 30px; padding: 5px 18px; font-size: 12px; font-weight: 600; color: #c9a03d; border: 1px solid #c9a03d30; }
 
-    /* contact */
-    .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; margin: 48px 0 40px; }
-    .contact-card { background: #0e1d33; border-radius: 24px; padding: 28px 18px; text-align: center; border: 1px solid #26446b; transition: 0.2s; }
-    .contact-card:hover { border-color: #0a84ff; transform: translateY(-3px); }
-    .contact-icon { font-size: 32px; margin-bottom: 16px; }
-    .contact-label { font-weight: 700; font-size: 12px; letter-spacing: 2px; color: #0a84ff; margin-bottom: 8px; }
-    .contact-value { color: #e0ecff; text-decoration: none; font-size: 15px; font-weight: 500; }
-    .contact-value:hover { color: #0a84ff; }
+    /* contact + map */
+    .contact-map-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      margin-top: 30px;
+    }
+    .contact-info {
+      background: linear-gradient(145deg, #0e1d32, #09162a);
+      border-radius: 32px;
+      padding: 32px;
+      border: 1px solid #2a4e7a;
+    }
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 28px;
+      padding: 12px 0;
+      border-bottom: 1px solid #1e3a58;
+    }
+    .info-icon {
+      font-size: 28px;
+      background: #c9a03d20;
+      width: 52px;
+      height: 52px;
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .info-detail a, .info-detail span { color: #e2edff; text-decoration: none; font-weight: 500; }
+    .info-detail a:hover { color: #c9a03d; text-decoration: underline; }
+    .map-container {
+      border-radius: 32px;
+      overflow: hidden;
+      border: 1px solid #c9a03d;
+      min-height: 320px;
+      background: #102135;
+    }
+    #map { height: 100%; width: 100%; min-height: 320px; z-index: 1; }
+    @media (max-width: 860px) { .contact-map-wrapper { grid-template-columns: 1fr; } .leader-flex { padding: 28px; } }
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      background: #030812;
+      border-top: 1px solid #c9a03d40;
+      font-size: 13px;
+      color: #527aa5;
+    }
 
-    footer { background: #030a15; border-top: 1px solid #1c3550; text-align: center; padding: 40px 20px; margin-top: 40px; }
-    footer p { color: #4e6e8e; font-size: 13px; }
-    @media (max-width: 700px) { .leader-inner { padding: 28px; } .founder-img-frame { max-width: 200px; margin: 0 auto 20px; } .leader-left { text-align: center; } }
+    /* animated underline effect for headings */
+    .glow-text {
+      text-shadow: 0 0 8px rgba(10,132,255,0.3);
+    }
+    .hover-lift {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .hover-lift:hover {
+      transform: translateY(-5px);
+    }
   </style>
 </head>
 <body>
 
-<!-- Navigation -->
-<nav>
-  <div class="container nav-flex">
+<nav class="navbar">
+  <div class="nav-container">
     <a href="#" class="logo">
       <div class="logo-icon">S</div>
-      <div class="logo-text">STRATARA <span>INTELLIGENCE</span></div>
+      <div class="logo-text">STRATARA INTELLIGENCE</div>
     </a>
     <div class="nav-links">
       <a href="#home" class="active">HOME</a>
+      <a href="#mission">MISSION</a>
       <a href="#services">SERVICES</a>
-      <a href="#publications">PUBLICATIONS</a>
-      <a href="#leadership">LEADERSHIP</a>
+      <a href="#publications">RESEARCH</a>
+      <a href="#leadership">FOUNDER</a>
       <a href="#contact">CONTACT</a>
     </div>
-    <button class="menu-btn" id="menuBtn" aria-label="Menu">
-      <span></span><span></span><span></span>
-    </button>
+    <button class="menu-btn" id="menuToggle"><span></span><span></span><span></span></button>
   </div>
 </nav>
-<div class="mobile-nav" id="mobileNav">
+<div class="mobile-menu" id="mobileMenu">
   <a href="#home">HOME</a>
+  <a href="#mission">MISSION</a>
   <a href="#services">SERVICES</a>
-  <a href="#publications">PUBLICATIONS</a>
-  <a href="#leadership">LEADERSHIP</a>
+  <a href="#publications">RESEARCH</a>
+  <a href="#leadership">FOUNDER</a>
   <a href="#contact">CONTACT</a>
 </div>
 
-<!-- Hero Section (Home) -->
+<!-- HERO SECTION -->
 <section id="home" class="hero">
-  <div class="rings-bg">
-    <div class="ring ring1"></div><div class="ring ring2"></div><div class="ring ring3"></div><div class="ring ring4"></div>
-  </div>
-  <div class="hero-content">
-    <div class="hero-badge">ADVISORY & RESEARCH DIVISIONS</div>
-    <h1>STRATARA <span class="text-gradient">INTELLIGENCE</span><br>GEOECONOMIC EDGE</h1>
-    <p class="hero-sub">Global advisory firm specializing in geoeconomic analysis, international business strategy, and cross‑cultural intelligence — empowering leaders in 32+ countries.</p>
+  <video class="hero-video" autoplay loop muted playsinline poster="https://assets.mixkit.co/videos/preview/mixkit-digital-globe-animation-1211-large.mp4">
+    <source src="https://assets.mixkit.co/videos/preview/mixkit-digital-globe-animation-1211-large.mp4" type="video/mp4">
+    <source src="https://cdn.pixabay.com/video/2020/10/11/52135-472081552_large.mp4" type="video/mp4">
+  </video>
+  <div class="hero-overlay"></div>
+  <div class="hero-content" data-aos="fade-up" data-aos-duration="1000">
+    <div class="badge">✦ GEOECONOMIC FORESIGHT ✦</div>
+    <h1>STRATARA<br>INTELLIGENCE, LLC</h1>
+    <p class="hero-sub">Global advisory and research specializing in geoeconomic analysis, international business strategy, and cross-cultural market intelligence.</p>
     <div class="btn-group">
-      <a href="#services" class="btn-primary">Explore Services</a>
-      <a href="#contact" class="btn-outline">Let's Connect</a>
+      <a href="#services" class="btn-primary">Explore Capabilities</a>
+      <a href="#contact" class="btn-outline">Connect with us</a>
     </div>
-    <div class="stats-row">
-      <div class="stat-item"><div class="stat-number">60+</div><div class="stat-label">PEER-REVIEWED PUBLICATIONS</div></div>
-      <div class="stat-item"><div class="stat-number">635+</div><div class="stat-label">ACADEMIC CITATIONS</div></div>
-      <div class="stat-item"><div class="stat-number">32</div><div class="stat-label">COUNTRIES EXPERIENCE</div></div>
+    <div class="hero-stats" id="statsContainer">
+      <div><span class="stat-digit" id="statPublications">0</span><span class="stat-digit">+</span><div class="stat-label">PEER-REVIEWED PUBLICATIONS</div></div>
+      <div><span class="stat-digit" id="statIndexed">0</span><div class="stat-label">INDEXED IN SCOPUS/WoS</div></div>
+      <div><span class="stat-digit" id="statCitations">0</span><span class="stat-digit">+</span><div class="stat-label">CITATIONS</div></div>
+      <div><span class="stat-digit" id="statCountries">0</span><div class="stat-label">COUNTRIES</div></div>
     </div>
   </div>
 </section>
 
-<!-- Services Section -->
-<section id="services" class="section-pad">
+<!-- MISSION & VISION -->
+<section id="mission">
   <div class="container">
-    <div style="text-align:center;"><span class="tag-sm">WHAT WE DELIVER</span></div>
-    <h2 class="section-title">Strategic Intelligence & Advisory</h2>
-    <p class="section-subhead">Cutting-edge research and actionable frameworks for multinationals, governments, and academic institutions.</p>
+    <div class="section-title" data-aos="fade-up">Guiding Principles</div>
+    <div class="section-sub" data-aos="fade-up" data-aos-delay="100">Strategic clarity for a disruptive global economy</div>
+    <div class="mv-grid">
+      <div class="mv-card" data-aos="flip-left" data-aos-duration="800">
+        <h3>Mission</h3>
+        <p style="line-height:1.7; color:#cbe1ff;">Stratara Intelligence, LLC empowers leaders to navigate global complexity by delivering rigorous geoeconomic analysis, strategic insight, and cross-cultural intelligence. We advance informed decision-making through interdisciplinary research, international collaboration, and a commitment to thought leadership in a disruptive global economy.</p>
+      </div>
+      <div class="mv-card" data-aos="flip-right" data-aos-duration="800">
+        <h3>Vision</h3>
+        <p style="line-height:1.7; color:#cbe1ff;">To be a globally recognized authority in geoeconomic intelligence and strategic advisory, shaping how institutions, markets, and governments understand and navigate the complexities of an interconnected world.</p>
+      </div>
+    </div>
+    <div data-aos="zoom-in" data-aos-delay="200" style="text-align:center; margin-top:20px;">
+      <p style="background: #c9a03d10; border-radius: 60px; padding: 16px 24px; max-width: 800px; margin:0 auto; border-left: 4px solid #c9a03d;">
+        <strong>Positioning Statement</strong><br>
+        Stratara Intelligence, LLC operates at the intersection of geoeconomics, global strategy, and cross-cultural intelligence by delivering research-driven advisory services that enable leaders to navigate complexity, mitigate risk, and capitalize on emerging opportunities in international markets.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="container">
+    <div class="section-title" data-aos="fade-up">Advisory & Research Excellence</div>
+    <div class="section-sub" data-aos="fade-up" data-aos-delay="100">Bridging geoeconomics, psychology, and strategy for multinational resilience.</div>
     <div class="services-grid">
-      <div class="service-card"><div class="service-icon">🌍</div><h3>Geoeconomic Analysis</h3><p>Mapping global power shifts, trade corridors, and emerging market dynamics to future-proof your strategy.</p></div>
-      <div class="service-card"><div class="service-icon">📈</div><h3>International Business Strategy</h3><p>Market entry, cross-border M&A, and competitive positioning in high-growth regions.</p></div>
-      <div class="service-card"><div class="service-icon">🧠</div><h3>Cross-Cultural Intelligence</h3><p>Multilingual frameworks and cultural indoctrination programs for global teams.</p></div>
-      <div class="service-card"><div class="service-icon">⚖️</div><h3>Geopolitical Risk Assessment</h3><p>Navigate political instability, sanctions, and regulatory shifts with actionable foresight.</p></div>
-      <div class="service-card"><div class="service-icon">📚</div><h3>Research & Publishing</h3><p>Scopus/WoS indexed reference books, white papers, and scholarly impact.</p></div>
-      <div class="service-card"><div class="service-icon">🎓</div><h3>Executive Education</h3><p>Custom workshops on geoeconomics, cultural adaptability, and global leadership.</p></div>
+      <div class="service-card" data-aos="fade-up" data-aos-delay="0"><div class="service-icon">🌐</div><h3>Geoeconomic Analysis</h3><p>Trade corridors, power shifts, emerging markets — actionable foresight.</p></div>
+      <div class="service-card" data-aos="fade-up" data-aos-delay="100"><div class="service-icon">📊</div><h3>International Business Strategy</h3><p>Market entry, cross-border expansion, competitive positioning.</p></div>
+      <div class="service-card" data-aos="fade-up" data-aos-delay="200"><div class="service-icon">🧭</div><h3>Cross-Cultural Intelligence</h3><p>Multilingual frameworks & cultural agility for global teams.</p></div>
+      <div class="service-card" data-aos="fade-up" data-aos-delay="300"><div class="service-icon">⚡</div><h3>Geopolitical Risk Assessment</h3><p>Navigate sanctions, political volatility, and regulatory shifts.</p></div>
+      <div class="service-card" data-aos="fade-up" data-aos-delay="400"><div class="service-icon">📘</div><h3>Research & Publishing</h3><p>Scopus/WoS indexed handbooks, white papers, scholarly impact.</p></div>
+      <div class="service-card" data-aos="fade-up" data-aos-delay="500"><div class="service-icon">🎓</div><h3>Executive Education</h3><p>Custom workshops on geoeconomics & global leadership.</p></div>
     </div>
   </div>
 </section>
 
-<!-- Publications Section -->
-<section id="publications" class="section-pad" style="background:#050d18;">
+<!-- PUBLICATIONS -->
+<section id="publications" style="background: #030b16;">
   <div class="container">
-    <div style="text-align:center;"><span class="tag-sm">SCHOLARLY IMPACT</span></div>
-    <h2 class="section-title">Selected Publications</h2>
-    <p class="section-subhead">60+ peer‑reviewed works · 42 indexed in Scopus/WoS · 12 languages · Global university distribution (Harvard, MIT, Oxford, etc.)</p>
-    <div class="pub-filters">
-      <button class="filter-btn active" data-filter="all">All Publications</button>
+    <div class="section-title" data-aos="fade-up">Scholarly Impact</div>
+    <div class="section-sub" data-aos="fade-up" data-aos-delay="100">60+ peer‑reviewed works · 42 indexed in Scopus or Web of Science · 635+ citations across 12 languages</div>
+    <div class="pub-filters" data-aos="fade-up">
+      <button class="filter-btn active" data-filter="all">All</button>
       <button class="filter-btn" data-filter="articles">Journal Articles</button>
       <button class="filter-btn" data-filter="books">Reference Books</button>
     </div>
-    <div id="pubContainer">
-      <!-- Journal articles group -->
-      <div class="pub-group" id="groupArticles">
-        <div class="pub-section-label">📄 JOURNAL ARTICLES (double-blind peer-reviewed)</div>
-        <div class="pub-row"><div class="pub-year">In Review</div><div class="pub-body"><div class="pub-title">The Structural Foundations of 21st Century Power: A Systems Approach to Demography, Geoeconomics, and Maritime Strategy</div><div class="pub-sub">World Politics</div></div></div>
-        <div class="pub-row"><div class="pub-year">In Review</div><div class="pub-body"><div class="pub-title">The National Cultural Adaptability Index: A New Metric for Global Economic Foresight</div><div class="pub-sub">Technological Forecasting and Social Change</div></div></div>
-        <div class="pub-row"><div class="pub-year">2019</div><div class="pub-body"><div class="pub-title">Cultural Indoctrination and Management Education Curriculum</div><div class="pub-sub">Intl Journal of Applied Management Theory and Research, Vol.1, 1–15</div></div></div>
-        <div class="pub-row"><div class="pub-year">2018</div><div class="pub-body"><div class="pub-title">Cultural Indoctrination and Open Innovation in International Business</div><div class="pub-sub">Global Journal of Economics and Business Studies, Vol.7, 102–116</div></div></div>
-        <div class="pub-row"><div class="pub-year">2016</div><div class="pub-body"><div class="pub-title">English as a Foreign Language Teaching and Productivity in Global Hypercompetition (with Fatmanur Kasarci)</div><div class="pub-sub">Intl Journal of Innovation in the Digital Economy, Vol.7, 47–55</div></div></div>
-        <div class="pub-row"><div class="pub-year">2016</div><div class="pub-body"><div class="pub-title">Cultural Indoctrination in Global Hypercompetition: A Conceptual Framework</div><div class="pub-sub">Intl Journal of Productivity Management, Vol.4, 39–51</div></div></div>
-        <div class="pub-row"><div class="pub-year">2013</div><div class="pub-body"><div class="pub-title">Diversity Management in Transcultural Organizations (with Hakan Sezerel)</div><div class="pub-sub">Global Business Perspectives, Vol.1, 132–143</div></div></div>
-      </div>
-      <!-- Reference books group -->
-      <div class="pub-group" id="groupBooks">
-        <div class="pub-section-label">📘 REFERENCE BOOKS (Scopus/WoS indexed & major publishers)</div>
-        <div class="pub-row"><div class="pub-year">2027**</div><div class="pub-body"><div class="pub-title">Cross-Cultural Perspectives on Industrial and Organizational Psychology (with John Branch)</div><div class="pub-sub">IGI Global</div></div><span class="pub-badge">Forthcoming</span></div>
-        <div class="pub-row"><div class="pub-year">2026</div><div class="pub-body"><div class="pub-title">Critical Economic Implications of Global Demographic Changes (with John Branch)</div><div class="pub-sub">IGI Global</div></div><span class="pub-badge">Scopus</span></div>
-        <div class="pub-row"><div class="pub-year">2026</div><div class="pub-body"><div class="pub-title">Impacts of Geoeconomics and Geopolitics on International Business (with John Branch)</div><div class="pub-sub">IGI Global</div></div><span class="pub-badge">Scopus</span></div>
-        <div class="pub-row"><div class="pub-year">2025</div><div class="pub-body"><div class="pub-title">Organizational Sociology in the Digital Age (with Mehmet Ferhat Ozbek)</div><div class="pub-sub">IGI Global</div></div><span class="pub-badge">Scopus</span></div>
-        <div class="pub-row"><div class="pub-year">2024</div><div class="pub-body"><div class="pub-title">Generative AI and Multifactor Productivity in Business (with Festus Adedoyin)</div><div class="pub-sub">IGI Global</div></div><span class="pub-badge">Scopus</span></div>
-        <div class="pub-row"><div class="pub-year">2023</div><div class="pub-body"><div class="pub-title">Examining Applied Multicultural Industrial and Organizational Psychology (with Angela Even)</div><div class="pub-sub">IGI Global</div></div><span class="pub-badge">Scopus</span></div>
-        <div class="pub-row"><div class="pub-year">2021</div><div class="pub-body"><div class="pub-title">The Marketisation of Higher Education (with John Branch)</div><div class="pub-sub">Palgrave Macmillan / Springer</div></div></div>
-        <div class="pub-row"><div class="pub-year">2017</div><div class="pub-body"><div class="pub-title">Handbook of Research on Human Factors in Contemporary Workforce Development (with Harish Chandan)</div><div class="pub-sub">IGI Global</div></div><span class="pub-badge">WoS+Scopus</span></div>
-        <div class="pub-row"><div class="pub-year">2015</div><div class="pub-body"><div class="pub-title">Handbook of Research on Global Business Opportunities</div><div class="pub-sub">IGI Global</div></div><span class="pub-badge">WoS+Scopus</span></div>
-        <!-- condensed representation but authoritative -->
-      </div>
+    <div id="pubArticles" class="pub-group" data-aos="fade-right">
+      <div class="pub-section-label">📄 JOURNAL ARTICLES (Double-blind peer review)</div>
+      <div class="pub-row"><div class="pub-year">In Review</div><div class="pub-body"><div class="pub-title">The Structural Foundations of 21st Century Power: A Systems Approach to Demography, Geoeconomics, and Maritime Strategy</div><div class="pub-sub">World Politics</div></div></div>
+      <div class="pub-row"><div class="pub-year">In Review</div><div class="pub-body"><div class="pub-title">The National Cultural Adaptability Index: A New Metric for Global Economic Foresight</div><div class="pub-sub">Technological Forecasting and Social Change</div></div></div>
+      <div class="pub-row"><div class="pub-year">2019</div><div class="pub-body"><div class="pub-title">Cultural Indoctrination and Management Education Curriculum</div><div class="pub-sub">International Journal of Applied Management Theory and Research, Vol.1, 1-15</div></div></div>
+      <div class="pub-row"><div class="pub-year">2018</div><div class="pub-body"><div class="pub-title">Cultural Indoctrination and Open Innovation in International Business</div><div class="pub-sub">Global Journal of Economics and Business Studies, Vol.7, 102-116</div></div></div>
     </div>
-    <p style="text-align:center; margin-top:32px; font-size:13px; color:#527a9e;">* Full bibliography available upon request · 42+ titles indexed in Scopus or Web of Science</p>
+    <div id="pubBooks" class="pub-group" style="display: block;" data-aos="fade-left">
+      <div class="pub-section-label">📚 REFERENCE BOOKS (Scopus / Web of Science indexed)</div>
+      <div class="pub-row"><div class="pub-year">2026</div><div class="pub-body"><div class="pub-title">Critical Economic Implications of Global Demographic Changes (with John Branch)</div><div class="pub-sub">IGI Global</div></div><span class="pub-badge">Scopus</span></div>
+      <div class="pub-row"><div class="pub-year">2026</div><div class="pub-body"><div class="pub-title">Impacts of Geoeconomics and Geopolitics on International Business (with John Branch)</div><div class="pub-sub">IGI Global</div></div><span class="pub-badge">Scopus</span></div>
+      <div class="pub-row"><div class="pub-year">2025</div><div class="pub-body"><div class="pub-title">Organizational Sociology in the Digital Age (with Mehmet Ferhat Ozbek)</div><div class="pub-sub">IGI Global</div></div><span class="pub-badge">Scopus</span></div>
+      <div class="pub-row"><div class="pub-year">2017</div><div class="pub-body"><div class="pub-title">Handbook of Research on Human Factors in Contemporary Workforce Development (with Harish Chandan)</div><div class="pub-sub">IGI Global</div></div><span class="pub-badge">WoS+Scopus</span></div>
+    </div>
   </div>
 </section>
 
-<!-- LEADERSHIP SECTION: OUR FOUNDER WITH EXTERNAL IMAGE (ibb.co link as requested) -->
-<section id="leadership" class="section-pad">
+<!-- LEADERSHIP -->
+<section id="leadership">
   <div class="container">
-    <div style="text-align:center;"><span class="tag-sm">OUR FOUNDER</span></div>
-    <h2 class="section-title">Bryan Christiansen, MBA, MS**</h2>
-    <p class="section-subhead">Scholar‑practitioner · Editor‑in‑Chief · Global advisor across six continents</p>
-    <div class="leader-wrapper">
-      <div class="leader-inner">
+    <div style="text-align: center;"><span class="badge" data-aos="fade-up">✦ OUR FOUNDER ✦</span></div>
+    <div class="section-title" data-aos="fade-up">Bryan Christiansen, MBA, MS**</div>
+    <div class="section-sub" data-aos="fade-up">Founder & Chairman · Editor‑in‑Chief · Scholar-Practitioner</div>
+    <div class="leader-card" data-aos="zoom-in-up">
+      <div class="leader-flex">
         <div class="leader-left">
-          <!-- PHOTO PLACEMENT: exactly the image from the given ibb.co link -->
-          <div class="founder-img-frame">
-            <img src="https://i.ibb.co/jPbsB5TQ/IMG-20251228-WA0006-1.jpg" alt="Founder portrait - Bryan Christiansen" onerror="this.onerror=null; this.src='https://placehold.co/300x300/0a2a44/white?text=BC+Photo';">
+          <div class="founder-img">
+            <img src="https://i.ibb.co/jPbsB5TQ/IMG-20251228-WA0006-1.jpg" alt="Bryan Christiansen" onerror="this.src='https://placehold.co/300x300/0a2a44/white?text=B+C'">
           </div>
-          <ul class="leader-list">
-            <li>Founder & Chairman, Stratara Intelligence</li>
-            <li>Editor-in-Chief, IGI Global Scientific Publishing</li>
-            <li>Adjunct Instructor, Southern New Hampshire University</li>
-            <li>Harvard Business Review Advisory Council</li>
-            <li>Academy of Management</li>
-            <li>Resided in 7 foreign nations · 32 countries experience</li>
-            <li>U.S. Foreign Service Eligibility (2002,2007) · Top Secret Clearance</li>
+          <ul style="list-style: none; text-align: left; margin-top: 20px;">
+            <li style="margin-bottom: 10px;">🔹 Founder & Chairman, Stratara Intelligence, LLC</li>
+            <li style="margin-bottom: 10px;">🔹 Editor-in-Chief, IGI Global Scientific Publishing</li>
+            <li style="margin-bottom: 10px;">🔹 Harvard Business Review Advisory Council</li>
+            <li style="margin-bottom: 10px;">🔹 U.S. Foreign Service Eligibility List · Top Secret Clearance</li>
+            <li>🌐 6 Languages: English, Spanish, Mandarin, Japanese, Turkish, Russian</li>
           </ul>
-          <div style="margin-top: 20px; font-size: 13px; color: #8aa3c4;"><strong>Languages:</strong> English, Spanish (Advanced), Mandarin Chinese, Japanese, Turkish, Russian</div>
         </div>
         <div class="leader-right">
-          <p class="leader-bio">Multilingual scholar-practitioner with 60+ peer-reviewed publications across geoeconomics, I/O psychology, and international business. 42 publications indexed in Scopus or Web of Science, surpassing 635 citations in 12 languages across doctoral dissertations and journals.</p>
-          <p class="leader-bio">Professional experience spans Global 500 firms: IBM, Cargill, Siemens, and Coca‑Cola, alongside extensive consulting across 32 countries. Publications are distributed to elite libraries including Harvard, MIT, Princeton, McGill, Imperial College London.</p>
-          <p class="leader-bio">Keynote speaker at international conferences in Turkey, Georgia, Russia, and the UK. Current editorial leadership includes over 40 major reference books and multiple journal volumes.</p>
-          <div class="tag-cloud">
-            <span class="tag">Geoeconomics</span><span class="tag">International Business</span><span class="tag">Cross-Cultural Intelligence</span>
-            <span class="tag">I/O Psychology</span><span class="tag">Workforce Development</span><span class="tag">Geopolitical Risk</span>
+          <p style="margin-bottom: 16px;">Multilingual scholar-practitioner with 60 peer‑reviewed publications across geoeconomics, I/O psychology, and international business. 42 publications indexed in Scopus or Web of Science, receiving over 635 citations across 12 languages.</p>
+          <p style="margin-bottom: 16px;">Global 500 experience: IBM, Cargill, Siemens, Coca‑Cola. Publications held at Harvard, MIT, Princeton, Imperial College London.</p>
+          <div class="tag-group">
+            <span class="tag">Geoeconomics</span><span class="tag">Cross-Cultural I/O</span><span class="tag">Geopolitical Risk</span>
+            <span class="tag">Workforce Development</span><span class="tag">International Strategy</span>
           </div>
         </div>
       </div>
@@ -258,65 +570,119 @@
   </div>
 </section>
 
-<!-- Contact Section -->
-<section id="contact" class="section-pad" style="background:#050d18;">
+<!-- CONTACT + MAP -->
+<section id="contact" style="background: #030b16;">
   <div class="container">
-    <div style="text-align:center;"><span class="tag-sm">CONNECT WITH US</span></div>
-    <h2 class="section-title">Engage Stratara Intelligence</h2>
-    <p class="section-subhead">Advisory, research collaborations, executive briefings — we look forward to hearing from you.</p>
-    <div class="contact-grid">
-      <div class="contact-card"><div class="contact-icon">📧</div><div class="contact-label">EMAIL</div><a href="mailto:strataraintel@proton.me" class="contact-value">strataraintel@proton.me</a></div>
-      <div class="contact-card"><div class="contact-icon">📞</div><div class="contact-label">PHONE</div><a href="tel:+12522680484" class="contact-value">(252) 268-0484</a></div>
-      <div class="contact-card"><div class="contact-icon">📍</div><div class="contact-label">ADDRESS</div><span class="contact-value">760 Cody Lane, Kinston, NC 28504, USA</span></div>
+    <div class="section-title" data-aos="fade-up">Connect & Engage</div>
+    <div class="section-sub" data-aos="fade-up">Let's discuss geoeconomic intelligence, research collaborations, or advisory mandates.</div>
+    <div class="contact-map-wrapper">
+      <div class="contact-info" data-aos="fade-right">
+        <div class="info-item"><div class="info-icon">📧</div><div class="info-detail"><strong>Email</strong><br><a href="mailto:strataraintel@proton.me">strataraintel@proton.me</a></div></div>
+        <div class="info-item"><div class="info-icon">📞</div><div class="info-detail"><strong>Phone</strong><br><a href="tel:+12522680484">(252) 268-0484</a></div></div>
+        <div class="info-item"><div class="info-icon">📍</div><div class="info-detail"><strong>Headquarters</strong><br><span>760 Cody Lane, Kinston, NC 28504, USA</span></div></div>
+        <div style="margin-top: 20px;"><a href="mailto:strataraintel@proton.me" class="btn-primary">Send an Inquiry →</a></div>
+      </div>
+      <div class="map-container" data-aos="fade-left"><div id="map"></div></div>
     </div>
-    <div style="text-align:center;"><a href="mailto:strataraintel@proton.me" class="btn-primary" style="padding: 14px 36px;">Send Inquiry →</a></div>
   </div>
 </section>
 
-<footer>
-  <p>© <span id="year"></span> Stratara Intelligence, LLC — Kinston, North Carolina, USA — Global Advisory & Research Divisions</p>
-</footer>
+<footer><p>© <span id="year"></span> Stratara Intelligence, LLC — Kinston, North Carolina, USA — Advisory & Research Divisions</p></footer>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
-  // Mobile menu toggle
-  const menuBtn = document.getElementById('menuBtn');
-  const mobileNav = document.getElementById('mobileNav');
-  menuBtn?.addEventListener('click', () => { mobileNav.classList.toggle('open'); });
-  document.querySelectorAll('.mobile-nav a').forEach(link => { link.addEventListener('click', () => { mobileNav.classList.remove('open'); }); });
+  AOS.init({ duration: 800, once: true, offset: 100 });
 
-  // Publication filter logic
+  // Mobile menu
+  const menuToggle = document.getElementById('menuToggle');
+  const mobileMenu = document.getElementById('mobileMenu');
+  menuToggle?.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+  document.querySelectorAll('.mobile-menu a').forEach(link => link.addEventListener('click', () => mobileMenu.classList.remove('open')));
+
+  // Publication filter
+  const articlesDiv = document.getElementById('pubArticles');
+  const booksDiv = document.getElementById('pubBooks');
   const filterBtns = document.querySelectorAll('.filter-btn');
-  const groupArticles = document.getElementById('groupArticles');
-  const groupBooks = document.getElementById('groupBooks');
-  function setFilter(type) {
-    if (type === 'all') { groupArticles.style.display = ''; groupBooks.style.display = ''; }
-    else if (type === 'articles') { groupArticles.style.display = ''; groupBooks.style.display = 'none'; }
-    else if (type === 'books') { groupArticles.style.display = 'none'; groupBooks.style.display = ''; }
+  function filterPubs(type) {
+    if (type === 'all') { articlesDiv.style.display = ''; booksDiv.style.display = ''; }
+    else if (type === 'articles') { articlesDiv.style.display = ''; booksDiv.style.display = 'none'; }
+    else { articlesDiv.style.display = 'none'; booksDiv.style.display = ''; }
   }
   filterBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       filterBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      const filterVal = btn.getAttribute('data-filter');
-      setFilter(filterVal);
+      filterPubs(btn.getAttribute('data-filter'));
     });
   });
-  setFilter('all');
+  filterPubs('all');
 
-  // Active nav highlight on scroll
-  const sections = ['home', 'services', 'publications', 'leadership', 'contact'];
+  // Active nav highlight
+  const sections = document.querySelectorAll('section');
   window.addEventListener('scroll', () => {
-    let current = 'home';
-    for (let s of sections) {
-      const el = document.getElementById(s);
-      if (el && window.scrollY >= el.offsetTop - 150) current = s;
-    }
+    let current = '';
+    sections.forEach(sec => {
+      if (window.scrollY >= sec.offsetTop - 150) current = sec.getAttribute('id');
+    });
     document.querySelectorAll('.nav-links a').forEach(a => {
       a.classList.remove('active');
       if (a.getAttribute('href') === `#${current}`) a.classList.add('active');
     });
   });
+
+  // NUMBER COUNTING ANIMATION (on load and when stats come into view)
+  function animateNumbers() {
+    const pubElement = document.getElementById('statPublications');
+    const indexedElement = document.getElementById('statIndexed');
+    const citationsElement = document.getElementById('statCitations');
+    const countriesElement = document.getElementById('statCountries');
+    
+    const targets = { pub: 60, indexed: 42, citations: 635, countries: 32 };
+    let started = false;
+    
+    function startCounting() {
+      if (started) return;
+      started = true;
+      let pubVal = 0, idxVal = 0, citVal = 0, cntVal = 0;
+      const duration = 2000;
+      const stepTime = 20;
+      const steps = duration / stepTime;
+      const pubStep = targets.pub / steps;
+      const idxStep = targets.indexed / steps;
+      const citStep = targets.citations / steps;
+      const cntStep = targets.countries / steps;
+      
+      const interval = setInterval(() => {
+        pubVal += pubStep; idxVal += idxStep; citVal += citStep; cntVal += cntStep;
+        if (pubVal >= targets.pub) { pubVal = targets.pub; idxVal = targets.indexed; citVal = targets.citations; cntVal = targets.countries; clearInterval(interval); }
+        pubElement.innerText = Math.floor(pubVal);
+        indexedElement.innerText = Math.floor(idxVal);
+        citationsElement.innerText = Math.floor(citVal);
+        countriesElement.innerText = Math.floor(cntVal);
+      }, stepTime);
+    }
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => { if (entry.isIntersecting) { startCounting(); observer.disconnect(); } });
+    }, { threshold: 0.3 });
+    const statsContainer = document.getElementById('statsContainer');
+    if (statsContainer) observer.observe(statsContainer);
+    else startCounting();
+  }
+  
+  animateNumbers();
   document.getElementById('year').innerText = new Date().getFullYear();
+
+  // Leaflet map
+  const map = L.map('map').setView([35.2672, -77.5816], 13);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> & CartoDB',
+    subdomains: 'abcd',
+    maxZoom: 18,
+  }).addTo(map);
+  L.marker([35.2672, -77.5816]).addTo(map).bindPopup('<b>Stratara Intelligence, LLC</b><br/>760 Cody Lane, Kinston, NC 28504').openPopup();
+  L.circle([35.2672, -77.5816], { radius: 600, color: '#c9a03d', weight: 1.5, fillOpacity: 0.1 }).addTo(map);
 </script>
 </body>
 </html>
