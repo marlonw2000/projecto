@@ -4,390 +4,826 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Stratara Intelligence | Geoeconomic Advisory & Research</title>
-  <!-- Favicon (ícono de pestaña) usando la imagen del logo -->
   <link rel="icon" type="image/png" href="https://i.ibb.co/Q3WJ9zpv/Segment-20260330-123138011.png">
   <link rel="apple-touch-icon" href="https://i.ibb.co/Q3WJ9zpv/Segment-20260330-123138011.png">
-  <!-- Google Fonts + Leaflet CSS -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      cursor: none; /* hide default cursor for custom */
+    :root {
+      --gold: #c9a03d;
+      --gold-light: #f0c060;
+      --gold-dim: rgba(201,160,61,0.3);
+      --blue: #0a84ff;
+      --blue-deep: #0052b3;
+      --navy: #050c17;
+      --navy2: #030b16;
+      --card-bg: linear-gradient(145deg, #0e1d32, #09162a);
+      --text: #eef3ff;
+      --text-dim: #8aa4cd;
     }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
+
+    html { scroll-behavior: smooth; }
 
     body {
       font-family: 'Inter', sans-serif;
-      background: #050c17;
-      color: #eef3ff;
-      scroll-behavior: smooth;
+      background: var(--navy);
+      color: var(--text);
       overflow-x: hidden;
     }
 
-    /* ---------- CUSTOM PREMIUM CURSOR ---------- */
+    /* =========================================
+       CUSTOM CURSOR
+    ========================================= */
     .cursor-dot, .cursor-ring {
-      position: fixed;
-      top: 0;
-      left: 0;
-      pointer-events: none;
-      z-index: 9999;
-      border-radius: 50%;
-      transition: transform 0.1s ease, opacity 0.2s;
-      will-change: transform;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 99999;
+      border-radius: 50%; will-change: transform;
     }
     .cursor-dot {
-      width: 8px;
-      height: 8px;
-      background: #c9a03d;
-      transform: translate(-50%, -50%);
+      width: 6px; height: 6px;
+      background: var(--gold);
+      transform: translate(-50%,-50%);
+      transition: transform 0.05s, width 0.2s, height 0.2s;
+      box-shadow: 0 0 12px var(--gold);
     }
     .cursor-ring {
-      width: 40px;
-      height: 40px;
-      border: 2px solid rgba(201,160,61,0.5);
+      width: 36px; height: 36px;
+      border: 1.5px solid rgba(201,160,61,0.7);
       background: transparent;
-      transform: translate(-50%, -50%) scale(1);
-      transition: width 0.3s, height 0.3s, border-color 0.2s;
+      transform: translate(-50%,-50%);
+      transition: width 0.35s cubic-bezier(0.2,0.9,0.4,1.1),
+                  height 0.35s cubic-bezier(0.2,0.9,0.4,1.1),
+                  border-color 0.2s, background 0.2s;
     }
-    /* hover effect for interactive elements */
-    a:hover ~ .cursor-ring, button:hover ~ .cursor-ring, .service-card:hover ~ .cursor-ring,
-    .btn-primary:hover ~ .cursor-ring, .btn-outline:hover ~ .cursor-ring,
-    .blog-card:hover ~ .cursor-ring {
-      width: 56px;
-      height: 56px;
-      border-color: #0a84ff;
-      background: rgba(10,132,255,0.05);
+    .cursor-ring.hovered {
+      width: 58px; height: 58px;
+      border-color: var(--blue);
+      background: rgba(10,132,255,0.07);
+    }
+    .cursor-ring.clicking {
+      width: 24px; height: 24px;
+      background: rgba(201,160,61,0.25);
     }
 
-    /* ---------- SCROLL REVEAL (fade-up) ---------- */
+    /* =========================================
+       LOADING SCREEN
+    ========================================= */
+    #loader {
+      position: fixed; inset: 0;
+      background: #020810;
+      z-index: 100000;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 24px;
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+    }
+    #loader.hidden { opacity: 0; visibility: hidden; }
+    .loader-logo {
+      font-family: 'Cinzel', serif;
+      font-size: 1.4rem;
+      letter-spacing: 6px;
+      background: linear-gradient(135deg, #fff, var(--gold));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      animation: pulse 2s ease infinite;
+    }
+    .loader-bar-wrap {
+      width: 240px; height: 2px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 2px; overflow: hidden;
+    }
+    .loader-bar {
+      height: 100%; width: 0;
+      background: linear-gradient(90deg, var(--blue), var(--gold));
+      border-radius: 2px;
+      animation: loadBar 1.8s ease forwards;
+    }
+    @keyframes loadBar { to { width: 100%; } }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+    /* =========================================
+       SCROLL REVEAL
+    ========================================= */
     .reveal {
       opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.9s cubic-bezier(0.2, 0.9, 0.4, 1.1), transform 0.9s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      transform: translateY(32px);
+      transition: opacity 0.9s cubic-bezier(0.2,0.9,0.4,1), transform 0.9s cubic-bezier(0.2,0.9,0.4,1);
     }
-    .reveal.revealed {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    .reveal.revealed { opacity: 1; transform: translateY(0); }
+    .reveal-left { opacity: 0; transform: translateX(-40px); transition: opacity 0.9s ease, transform 0.9s ease; }
+    .reveal-left.revealed { opacity: 1; transform: translateX(0); }
+    .reveal-right { opacity: 0; transform: translateX(40px); transition: opacity 0.9s ease, transform 0.9s ease; }
+    .reveal-right.revealed { opacity: 1; transform: translateX(0); }
 
-    /* ---------- DYNAMIC GLOW & MICRO-INTERACTIONS ---------- */
-    .service-card, .mv-card, .pub-row, .leader-card, .contact-info, .map-container, .blog-card {
-      transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-    }
-    .service-card:hover, .mv-card:hover, .leader-card:hover, .blog-card:hover {
-      box-shadow: 0 20px 35px -12px rgba(10,132,255,0.3), 0 0 0 1px rgba(201,160,61,0.3);
-      transform: translateY(-8px);
-    }
-    .pub-row:hover {
-      border-left: 3px solid #c9a03d;
-      background: #102438;
-      transform: translateX(6px);
-    }
-    .btn-primary, .btn-outline {
-      transition: transform 0.25s ease, box-shadow 0.3s, background 0.2s;
-    }
-    .btn-primary:active, .btn-outline:active {
-      transform: scale(0.97);
-    }
-
-    /* ---------- PARALLAX LAYERS (real movement) ---------- */
-    .parallax-bg {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 120%;
-      background: radial-gradient(circle at 20% 40%, rgba(10,132,255,0.08), transparent);
-      pointer-events: none;
-      will-change: transform;
-      z-index: 0;
-    }
-    .hero .rings-bg {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-    }
-    .ring {
-      position: absolute;
-      border-radius: 50%;
-      border: 1px solid rgba(10,132,255,0.2);
-      will-change: transform;
-    }
-    /* additional parallax for sections */
-    .section-parallax {
-      transition: transform 0.1s linear;
-      will-change: transform;
-    }
-
-    /* ---------- GLASS NAV (already premium) ---------- */
+    /* =========================================
+       NAVBAR
+    ========================================= */
     .navbar {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      background: rgba(5, 12, 23, 0.85);
-      backdrop-filter: blur(18px);
-      border-bottom: 1px solid rgba(10, 132, 255, 0.4);
+      position: fixed; top: 0; width: 100%;
+      background: rgba(5,12,23,0.75);
+      backdrop-filter: blur(24px) saturate(1.5);
+      border-bottom: 1px solid rgba(201,160,61,0.25);
       z-index: 1000;
-      padding: 1rem 2rem;
-      transition: 0.2s;
+      padding: 0.9rem 2rem;
+      transition: padding 0.3s, background 0.3s;
     }
-    .nav-container {
-      max-width: 1400px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-    }
+    .navbar.scrolled { padding: 0.6rem 2rem; background: rgba(3,8,18,0.92); }
+    .nav-container { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+    .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
     .logo-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      overflow: hidden;
-      background: #0a84ff10;
-      box-shadow: 0 6px 12px -6px rgba(0,0,0,0.4);
+      width: 44px; height: 44px; border-radius: 12px; overflow: hidden;
+      background: rgba(10,132,255,0.08);
+      box-shadow: 0 6px 20px -6px rgba(0,0,0,0.5), 0 0 0 1px rgba(201,160,61,0.2);
+      transition: transform 0.3s;
     }
-    .logo-icon img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+    .logo:hover .logo-icon { transform: rotate(-5deg) scale(1.05); }
+    .logo-icon img { width: 100%; height: 100%; object-fit: cover; }
     .logo-text {
-      font-weight: 800;
-      font-size: 1.2rem;
-      letter-spacing: -0.3px;
+      font-family: 'Cinzel', serif;
+      font-weight: 700; font-size: 1.05rem;
+      letter-spacing: 1px;
       background: linear-gradient(120deg, #fff, #9ac0ff);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
+      -webkit-background-clip: text; background-clip: text; color: transparent;
     }
-    .nav-links { display: flex; gap: 2rem; }
+    .nav-links { display: flex; gap: 1.8rem; }
     .nav-links a {
-      color: #cbd5ff;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.9rem;
-      transition: 0.2s;
-      position: relative;
+      font-family: 'Rajdhani', sans-serif;
+      color: #cbd5ff; text-decoration: none; font-weight: 600; font-size: 0.85rem;
+      letter-spacing: 1.5px; transition: 0.2s; position: relative;
     }
-    .nav-links a:after {
-      content: '';
-      position: absolute;
-      bottom: -6px;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: #c9a03d;
-      transition: 0.2s;
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -6px; left: 0;
+      width: 0; height: 1.5px; background: var(--gold); transition: 0.25s;
     }
-    .nav-links a:hover:after, .nav-links a.active:after { width: 100%; }
-    .nav-links a.active { color: #c9a03d; }
-    .menu-btn { display: none; background: none; border: none; flex-direction: column; gap: 6px; cursor: pointer; }
-    .menu-btn span { width: 26px; height: 2px; background: #eef3ff; border-radius: 2px; }
+    .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+    .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+    .menu-btn { display: none; background: none; border: none; flex-direction: column; gap: 5px; }
+    .menu-btn span { width: 24px; height: 2px; background: var(--text); border-radius: 2px; transition: 0.3s; }
     .mobile-menu {
-      display: none;
-      background: #050c17e6;
-      backdrop-filter: blur(20px);
-      position: fixed;
-      top: 75px;
-      left: 0;
-      width: 100%;
-      flex-direction: column;
-      padding: 1.5rem;
-      gap: 1rem;
-      z-index: 999;
-      border-bottom: 1px solid #c9a03d;
+      display: none; background: rgba(5,12,23,0.96); backdrop-filter: blur(24px);
+      position: fixed; top: 72px; left: 0; width: 100%;
+      flex-direction: column; padding: 1.5rem;
+      gap: 1rem; z-index: 999; border-bottom: 1px solid var(--gold-dim);
     }
     .mobile-menu.open { display: flex; }
     .mobile-menu a { color: white; font-weight: 600; text-decoration: none; font-size: 1.1rem; padding: 8px 0; transition: 0.2s; }
-    .mobile-menu a:hover { color: #c9a03d; padding-left: 8px; }
+    .mobile-menu a:hover { color: var(--gold); padding-left: 10px; }
     @media (max-width: 780px) { .nav-links { display: none; } .menu-btn { display: flex; } }
-
-    /* scroll offset for fixed header */
     section { scroll-margin-top: 80px; }
 
-    /* HERO with video & parallax layers */
+    /* =========================================
+       HERO SECTION - MEGA EFFECTS
+    ========================================= */
     .hero {
       position: relative;
       min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       overflow: hidden;
     }
-    .hero-video {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: 0;
-      filter: brightness(0.45) contrast(1.05);
-      will-change: transform;
-    }
-    .hero-overlay {
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 30% 20%, rgba(0,30,60,0.65), rgba(5,12,23,0.9));
+
+    /* Canvas for particle network */
+    #particleCanvas {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
       z-index: 1;
     }
+
+    /* Aurora / nebula background */
+    .aurora {
+      position: absolute; inset: 0;
+      z-index: 0;
+      background: #020810;
+      overflow: hidden;
+    }
+    .aurora::before {
+      content: '';
+      position: absolute;
+      top: -40%; left: -20%;
+      width: 80%; height: 80%;
+      background: radial-gradient(ellipse, rgba(10,132,255,0.25) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: auroraFloat1 12s ease-in-out infinite alternate;
+    }
+    .aurora::after {
+      content: '';
+      position: absolute;
+      bottom: -30%; right: -15%;
+      width: 70%; height: 70%;
+      background: radial-gradient(ellipse, rgba(201,160,61,0.15) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: auroraFloat2 16s ease-in-out infinite alternate;
+    }
+    .aurora-extra {
+      position: absolute; inset: 0; z-index: 0; pointer-events: none;
+    }
+    .aurora-extra::before {
+      content: '';
+      position: absolute;
+      top: 20%; left: 30%;
+      width: 50%; height: 50%;
+      background: radial-gradient(ellipse, rgba(80,30,200,0.1) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: auroraFloat3 20s ease-in-out infinite alternate;
+    }
+    @keyframes auroraFloat1 { 0%{transform:translate(0,0) scale(1)} 100%{transform:translate(8%,12%) scale(1.2)} }
+    @keyframes auroraFloat2 { 0%{transform:translate(0,0) scale(1)} 100%{transform:translate(-10%,-8%) scale(1.15)} }
+    @keyframes auroraFloat3 { 0%{transform:translate(0,0) scale(0.9)} 100%{transform:translate(5%,10%) scale(1.1)} }
+
+    /* Hero video */
+    .hero-video {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%; object-fit: cover;
+      z-index: 2;
+      filter: brightness(0.18) saturate(1.8) hue-rotate(10deg);
+      will-change: transform;
+    }
+
+    /* Grid overlay */
+    .hero-grid {
+      position: absolute; inset: 0; z-index: 3;
+      background-image:
+        linear-gradient(rgba(10,132,255,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(10,132,255,0.06) 1px, transparent 1px);
+      background-size: 80px 80px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 100%);
+      animation: gridPulse 8s ease infinite;
+    }
+    @keyframes gridPulse {
+      0%,100%{opacity:0.4} 50%{opacity:0.8}
+    }
+
+    /* Scan line */
+    .scanline {
+      position: absolute; inset: 0; z-index: 4;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.08) 2px,
+        rgba(0,0,0,0.08) 4px
+      );
+      pointer-events: none;
+    }
+
+    /* Radial glow spotlight */
+    .hero-spotlight {
+      position: absolute; inset: 0; z-index: 4;
+      background: radial-gradient(ellipse 60% 60% at 50% 50%, transparent 40%, rgba(2,8,16,0.7) 100%);
+      pointer-events: none;
+    }
+
+    /* Animated rings */
+    .rings-container {
+      position: absolute; inset: 0; z-index: 3;
+      display: flex; align-items: center; justify-content: center;
+      pointer-events: none;
+    }
+    .ring-pulse {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(201,160,61,0.15);
+      animation: ringExpand 6s cubic-bezier(0.2,0.8,0.4,1) infinite;
+    }
+    .ring-pulse:nth-child(2) { animation-delay: -2s; }
+    .ring-pulse:nth-child(3) { animation-delay: -4s; }
+    @keyframes ringExpand {
+      0% { width:0; height:0; opacity:0.8; }
+      100% { width:900px; height:900px; opacity:0; }
+    }
+
+    /* Hero content */
     .hero-content {
-      position: relative;
-      z-index: 3;
-      max-width: 950px;
-      text-align: center;
-      padding: 2rem;
+      position: relative; z-index: 10;
+      max-width: 1000px; text-align: center; padding: 2rem;
     }
+
+    /* Glitch badge */
     .badge {
-      background: rgba(10,132,255,0.2);
-      border: 1px solid rgba(201,160,61,0.6);
-      border-radius: 60px;
-      padding: 6px 20px;
-      font-size: 0.7rem;
-      letter-spacing: 2.5px;
-      font-weight: 800;
       display: inline-block;
+      background: rgba(10,132,255,0.12);
+      border: 1px solid rgba(201,160,61,0.5);
+      border-radius: 60px;
+      padding: 7px 22px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 3px; font-weight: 700;
+      color: var(--gold); backdrop-filter: blur(6px);
       margin-bottom: 1.5rem;
-      color: #c9a03d;
-      backdrop-filter: blur(4px);
+      animation: badgePulse 4s ease infinite;
     }
-    h1 {
-      font-size: clamp(2.8rem, 8vw, 5rem);
-      font-weight: 900;
-      line-height: 1.1;
-      background: linear-gradient(135deg, #FFFFFF, #c9a03d);
-      -webkit-background-clip: text;
-      background-clip: text;
+    @keyframes badgePulse {
+      0%,100%{box-shadow:0 0 0 0 rgba(201,160,61,0)} 50%{box-shadow:0 0 20px 4px rgba(201,160,61,0.2)}
+    }
+
+    /* Glowing animated H1 */
+    h1.hero-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(2.6rem, 7.5vw, 5.2rem);
+      font-weight: 900; line-height: 1.1;
+      letter-spacing: -0.5px;
+      margin-bottom: 0.5rem;
+    }
+    .title-line1 {
+      display: block;
+      background: linear-gradient(135deg, #FFFFFF 30%, #c9a03d 70%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      animation: titleShimmer 6s ease infinite;
+      background-size: 200%;
+    }
+    .title-line2 {
+      display: block;
+      background: linear-gradient(135deg, #c9a03d, #fff 60%, #9ac0ff);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      animation: titleShimmer 6s ease infinite reverse;
+      background-size: 200%;
+    }
+    @keyframes titleShimmer {
+      0%{background-position:0%} 50%{background-position:100%} 100%{background-position:0%}
+    }
+
+    /* Text glow effect */
+    .hero-glow-text {
+      position: absolute;
+      font-family: 'Cinzel', serif;
+      font-size: clamp(2.6rem, 7.5vw, 5.2rem);
+      font-weight: 900; line-height: 1.1;
+      top: 0; left: 0; right: 0;
       color: transparent;
+      filter: blur(20px);
+      opacity: 0.4;
+      background: linear-gradient(135deg, var(--blue), var(--gold));
+      -webkit-background-clip: text; background-clip: text;
+      pointer-events: none;
+      animation: glowPulse 4s ease infinite;
     }
-    .hero-sub { font-size: 1.1rem; color: #d0e2ff; max-width: 700px; margin: 1.5rem auto; }
-    .btn-group { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    @keyframes glowPulse { 0%,100%{opacity:0.3} 50%{opacity:0.6} }
+
+    .title-wrapper { position: relative; }
+
+    .hero-sub {
+      font-size: 1.05rem; color: #c5d8f0; max-width: 680px; margin: 1.4rem auto 0;
+      line-height: 1.7; letter-spacing: 0.2px;
+    }
+
+    /* Typewriter subtitle */
+    .typewriter-wrap {
+      display: inline-block;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.85rem; letter-spacing: 3px; font-weight: 600;
+      color: var(--gold); margin-bottom: 0.5rem;
+    }
+    .typewriter-cursor {
+      display: inline-block; width: 2px; height: 1em;
+      background: var(--gold); margin-left: 2px;
+      animation: blink 0.8s step-end infinite;
+      vertical-align: middle;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    .btn-group { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2.2rem; }
     .btn-primary {
       background: linear-gradient(100deg, #0a84ff, #0052b3);
-      border: none;
-      padding: 14px 34px;
-      border-radius: 40px;
-      font-weight: 700;
-      color: white;
-      transition: 0.3s;
-      text-decoration: none;
-      box-shadow: 0 8px 20px rgba(10,132,255,0.4);
+      border: none; padding: 14px 36px; border-radius: 40px;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700; letter-spacing: 1.5px;
+      color: white; text-decoration: none;
+      box-shadow: 0 8px 24px rgba(10,132,255,0.45), 0 0 0 0 rgba(10,132,255,0.3);
+      transition: transform 0.3s, box-shadow 0.3s;
+      position: relative; overflow: hidden;
     }
-    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 30px -6px #0a84ff; }
+    .btn-primary::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(100deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%);
+      transform: translateX(-100%); transition: transform 0.5s;
+    }
+    .btn-primary:hover::before { transform: translateX(100%); }
+    .btn-primary:hover { transform: translateY(-4px); box-shadow: 0 18px 36px -6px rgba(10,132,255,0.6); }
     .btn-outline {
-      background: rgba(10,132,255,0.1);
+      background: rgba(201,160,61,0.07);
       backdrop-filter: blur(8px);
-      border: 1px solid #c9a03d;
-      padding: 14px 34px;
-      border-radius: 40px;
-      font-weight: 700;
-      color: #e3f0ff;
-      text-decoration: none;
+      border: 1px solid rgba(201,160,61,0.6);
+      padding: 14px 36px; border-radius: 40px;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700; letter-spacing: 1.5px;
+      color: var(--gold); text-decoration: none;
+      transition: 0.3s;
+      position: relative; overflow: hidden;
     }
-    .btn-outline:hover { background: rgba(201,160,61,0.15); border-color: #c9a03d; color: #c9a03d; }
-    .hero-stats { display: flex; gap: 48px; justify-content: center; margin-top: 58px; flex-wrap: wrap; }
-    .stat-digit { font-size: 34px; font-weight: 800; color: #c9a03d; line-height: 1; }
-    .stat-label { font-size: 11px; letter-spacing: 2px; font-weight: 600; color: #aac4ec; }
+    .btn-outline:hover { background: rgba(201,160,61,0.15); transform: translateY(-4px); box-shadow: 0 12px 30px -8px rgba(201,160,61,0.4); }
 
-    /* sections */
+    /* Hero stats */
+    .hero-stats { display: flex; gap: 48px; justify-content: center; margin-top: 64px; flex-wrap: wrap; }
+    .stat-item { text-align: center; position: relative; }
+    .stat-item::after {
+      content: ''; position: absolute; right: -24px; top: 50%;
+      transform: translateY(-50%);
+      height: 40px; width: 1px;
+      background: linear-gradient(180deg, transparent, rgba(201,160,61,0.4), transparent);
+    }
+    .stat-item:last-child::after { display: none; }
+    .stat-digit {
+      font-family: 'Cinzel', serif;
+      font-size: 36px; font-weight: 700; color: var(--gold); line-height: 1;
+      text-shadow: 0 0 20px rgba(201,160,61,0.4);
+    }
+    .stat-plus { font-size: 22px; vertical-align: super; }
+    .stat-label {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 10px; letter-spacing: 2.5px; font-weight: 600; color: #7a9ccc;
+      margin-top: 6px;
+    }
+
+    /* Scroll indicator */
+    .scroll-indicator {
+      position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
+      z-index: 10; display: flex; flex-direction: column; align-items: center; gap: 8px;
+      opacity: 0.7;
+    }
+    .scroll-mouse {
+      width: 24px; height: 38px; border: 1.5px solid rgba(201,160,61,0.5);
+      border-radius: 12px; display: flex; justify-content: center; padding-top: 6px;
+    }
+    .scroll-mouse-dot {
+      width: 4px; height: 8px; background: var(--gold); border-radius: 2px;
+      animation: scrollDot 2s ease infinite;
+    }
+    @keyframes scrollDot { 0%{transform:translateY(0);opacity:1} 80%{transform:translateY(14px);opacity:0} 100%{transform:translateY(0);opacity:0} }
+    .scroll-label { font-size: 9px; letter-spacing: 3px; color: var(--gold); font-family: 'Rajdhani', sans-serif; font-weight: 600; }
+
+    /* =========================================
+       FLOATING DATA BLOBS
+    ========================================= */
+    .data-blob {
+      position: absolute; z-index: 6;
+      background: rgba(10,132,255,0.1);
+      border: 1px solid rgba(10,132,255,0.3);
+      backdrop-filter: blur(8px);
+      border-radius: 12px; padding: 8px 14px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.7rem; letter-spacing: 1.5px; font-weight: 600;
+      color: #9ac0ff; white-space: nowrap;
+      animation: blobFloat 8s ease-in-out infinite;
+    }
+    .data-blob:nth-child(1) { top: 22%; left: 8%; animation-delay: 0s; }
+    .data-blob:nth-child(2) { top: 35%; right: 6%; animation-delay: -3s; }
+    .data-blob:nth-child(3) { bottom: 28%; left: 5%; animation-delay: -5s; }
+    .data-blob:nth-child(4) { bottom: 32%; right: 9%; animation-delay: -1.5s; }
+    @keyframes blobFloat { 0%,100%{transform:translateY(0px)} 50%{transform:translateY(-12px)} }
+    @media (max-width: 900px) { .data-blob { display: none; } }
+
+    /* =========================================
+       SECTIONS
+    ========================================= */
     section { padding: 100px 24px; position: relative; overflow: hidden; }
     .container { max-width: 1280px; margin: 0 auto; }
-    .section-title { font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 800; text-align: center; margin-bottom: 12px; }
-    .section-sub { text-align: center; color: #8aa4cd; max-width: 700px; margin: 0 auto 50px; }
 
-    .mv-grid, .services-grid, .blog-grid { display: grid; gap: 32px; }
-    .mv-grid { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); margin-bottom: 40px; }
-    .services-grid { grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); }
-    .blog-grid { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
-    .mv-card, .service-card, .blog-card {
-      background: linear-gradient(145deg, #0e1d32, #09162a);
-      border: 1px solid #1f4170;
-      border-radius: 32px;
-      padding: 32px 28px;
-      transition: all 0.3s;
+    .section-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 700; text-align: center; margin-bottom: 12px;
+      background: linear-gradient(135deg, #fff, var(--gold));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
     }
-    .mv-card h3, .service-card h3, .blog-card h3 { font-size: 1.7rem; font-weight: 800; margin-bottom: 20px; color: #c9a03d; }
-    .service-icon, .blog-icon { font-size: 42px; margin-bottom: 20px; }
-    .blog-date { font-size: 0.75rem; letter-spacing: 1px; color: #aac4ec; margin: 12px 0 8px; display: inline-block; background: #1f3a5a40; padding: 2px 12px; border-radius: 30px; }
-    .blog-excerpt { color: #cbd5ff; line-height: 1.5; margin-bottom: 20px; }
-    .read-more { color: #c9a03d; font-weight: 600; text-decoration: none; font-size: 0.85rem; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px; }
-    .read-more:hover { gap: 12px; color: #0a84ff; }
+    .section-sub { text-align: center; color: var(--text-dim); max-width: 700px; margin: 0 auto 50px; line-height: 1.7; }
 
-    /* publications & other existing styles */
+    /* Decorative horizontal divider */
+    .section-divider {
+      display: flex; align-items: center; justify-content: center; gap: 16px;
+      margin-bottom: 50px;
+    }
+    .section-divider::before, .section-divider::after {
+      content: ''; flex: 1; max-width: 120px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-dim));
+    }
+    .section-divider::after { background: linear-gradient(90deg, var(--gold-dim), transparent); }
+    .section-divider-icon { color: var(--gold); font-size: 1rem; }
+
+    /* =========================================
+       MISSION & VISION CARDS
+    ========================================= */
+    .mv-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(300px,1fr)); gap: 32px; margin-bottom: 40px; }
+    .mv-card {
+      background: var(--card-bg);
+      border: 1px solid #1f4170;
+      border-radius: 32px; padding: 36px 30px;
+      position: relative; overflow: hidden;
+      transition: transform 0.4s cubic-bezier(0.2,0.9,0.4,1.1), box-shadow 0.4s;
+    }
+    .mv-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(201,160,61,0.5), transparent);
+    }
+    .mv-card:hover { transform: translateY(-8px); box-shadow: 0 24px 48px -16px rgba(10,132,255,0.35), 0 0 0 1px rgba(201,160,61,0.2); }
+    .mv-card h3 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.5rem; font-weight: 700; margin-bottom: 18px; color: var(--gold);
+    }
+    .mv-card p { color: #c5d4ea; line-height: 1.75; }
+
+    /* =========================================
+       SERVICES GRID
+    ========================================= */
+    .services-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap: 28px; }
+    .service-card {
+      background: var(--card-bg);
+      border: 1px solid #1f4170; border-radius: 28px;
+      padding: 32px 28px; position: relative; overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.2,0.9,0.4,1.1);
+    }
+    .service-card::after {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(circle at 80% 20%, rgba(10,132,255,0.08), transparent 60%);
+      opacity: 0; transition: opacity 0.4s;
+    }
+    .service-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px -14px rgba(10,132,255,0.4), 0 0 0 1px rgba(201,160,61,0.25); }
+    .service-card:hover::after { opacity: 1; }
+    .service-icon { font-size: 44px; margin-bottom: 18px; display: block; }
+    .service-card h3 { font-family: 'Cinzel', serif; font-size: 1.15rem; font-weight: 700; margin-bottom: 14px; color: var(--gold); }
+    .service-card p { color: #a0bcd8; line-height: 1.6; font-size: 0.92rem; }
+
+    /* Service card corner accent */
+    .service-card::before {
+      content: ''; position: absolute;
+      top: 0; right: 0;
+      width: 60px; height: 60px;
+      background: linear-gradient(225deg, rgba(201,160,61,0.15), transparent);
+      border-bottom-left-radius: 28px;
+    }
+
+    /* =========================================
+       PUBLICATIONS
+    ========================================= */
     .pub-filters { display: flex; justify-content: center; gap: 12px; margin-bottom: 40px; flex-wrap: wrap; }
     .filter-btn {
-      background: #0e1d32; border: 1px solid #2a4e7a; padding: 8px 24px; border-radius: 40px;
-      font-weight: 600; cursor: pointer; color: #cbe1ff; transition: 0.2s;
+      background: #0e1d32; border: 1px solid #2a4e7a;
+      padding: 8px 24px; border-radius: 40px;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 600; letter-spacing: 1px;
+      cursor: pointer; color: #cbe1ff; transition: 0.25s;
     }
-    .filter-btn.active, .filter-btn:hover { background: #c9a03d; border-color: #c9a03d; color: #050c17; }
+    .filter-btn.active, .filter-btn:hover { background: var(--gold); border-color: var(--gold); color: #050c17; }
     .pub-group { margin-bottom: 30px; }
     .pub-section-label {
-      font-size: 12px; letter-spacing: 2px; font-weight: 800; color: #c9a03d;
-      border-left: 4px solid #c9a03d; padding-left: 18px; margin: 28px 0 18px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 11px; letter-spacing: 2.5px; font-weight: 700; color: var(--gold);
+      border-left: 3px solid var(--gold); padding-left: 18px; margin: 28px 0 18px;
     }
     .pub-row {
-      background: #0a1729b3; border: 1px solid #1e3a5a; border-radius: 20px;
-      padding: 16px 20px; margin-bottom: 12px; display: flex; gap: 18px; flex-wrap: wrap;
+      background: rgba(10,23,41,0.7);
+      border: 1px solid #1e3a5a; border-radius: 16px;
+      padding: 16px 20px; margin-bottom: 10px;
+      display: flex; gap: 18px; flex-wrap: wrap;
+      transition: all 0.3s;
     }
-    .pub-year { min-width: 70px; font-weight: 800; color: #c9a03d; }
-    .pub-badge { background: #c9a03d20; padding: 4px 12px; border-radius: 50px; font-size: 10px; font-weight: 700; color: #e6bc7a; }
+    .pub-row:hover { border-left: 3px solid var(--gold); background: #102438; transform: translateX(6px); }
+    .pub-year { min-width: 70px; font-family: 'Cinzel', serif; font-weight: 700; color: var(--gold); }
+    .pub-title { font-weight: 600; margin-bottom: 4px; color: var(--text); font-size: 0.92rem; }
+    .pub-sub { font-size: 0.78rem; color: #7a9ccc; font-style: italic; }
+    .pub-badge {
+      background: rgba(201,160,61,0.15); padding: 4px 12px; border-radius: 50px;
+      font-size: 10px; font-weight: 700; color: #e6bc7a; align-self: center; white-space: nowrap;
+      border: 1px solid rgba(201,160,61,0.25);
+    }
 
-    /* leadership card */
+    /* =========================================
+       BLOG
+    ========================================= */
+    .blog-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(300px,1fr)); gap: 28px; }
+    .blog-card {
+      background: var(--card-bg);
+      border: 1px solid #1f4170; border-radius: 28px;
+      padding: 30px 26px;
+      transition: all 0.4s cubic-bezier(0.2,0.9,0.4,1.1);
+      position: relative; overflow: hidden;
+    }
+    .blog-card::before {
+      content: ''; position: absolute;
+      bottom: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      transform: scaleX(0); transition: transform 0.4s;
+    }
+    .blog-card:hover { transform: translateY(-10px); box-shadow: 0 24px 48px -16px rgba(10,132,255,0.35); }
+    .blog-card:hover::before { transform: scaleX(1); }
+    .blog-icon { font-size: 40px; margin-bottom: 18px; display: block; }
+    .blog-card h3 { font-family: 'Cinzel', serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; color: var(--text); }
+    .blog-date {
+      font-size: 0.72rem; letter-spacing: 1px; color: #7a9ccc; margin: 10px 0 8px;
+      display: inline-block; background: rgba(31,58,90,0.35); padding: 2px 12px; border-radius: 30px;
+    }
+    .blog-excerpt { color: #9ab5d4; line-height: 1.6; margin-bottom: 20px; font-size: 0.9rem; }
+    .read-more { color: var(--gold); font-weight: 600; text-decoration: none; font-size: 0.85rem; transition: 0.2s; }
+    .read-more:hover { gap: 12px; color: var(--blue); }
+
+    /* =========================================
+       LEADERSHIP / FOUNDER
+    ========================================= */
     .leader-card {
-      background: linear-gradient(145deg, #0e1d32, #09162a);
+      background: var(--card-bg);
       border-radius: 48px; border: 1px solid #2a4e7a; overflow: hidden;
+      position: relative;
     }
-    .leader-flex { display: flex; flex-wrap: wrap; gap: 40px; padding: 44px; }
+    .leader-card::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(circle at 20% 50%, rgba(10,132,255,0.05), transparent 60%);
+      pointer-events: none;
+    }
+    .leader-flex { display: flex; flex-wrap: wrap; gap: 48px; padding: 52px; }
     .leader-left { flex: 1; min-width: 240px; text-align: center; }
-    .founder-img {
-      border-radius: 32px; overflow: hidden; border: 3px solid #c9a03d;
-      max-width: 260px; margin: 0 auto 20px; box-shadow: 0 20px 30px -12px black;
-    }
-    .founder-img img { width: 100%; display: block; aspect-ratio: 1/1; object-fit: cover; }
-    .tag-group { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
-    .tag { background: #0f2642; border-radius: 30px; padding: 5px 18px; font-size: 12px; font-weight: 600; color: #c9a03d; border: 1px solid #c9a03d30; }
 
-    /* contact + map */
-    .contact-map-wrapper {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 30px;
+    /* Photo with dramatic effects */
+    .founder-img-wrap {
+      position: relative; max-width: 280px; margin: 0 auto 24px;
     }
+    .founder-img-glow {
+      position: absolute; inset: -8px;
+      border-radius: 36px;
+      background: linear-gradient(135deg, rgba(201,160,61,0.3), rgba(10,132,255,0.2));
+      filter: blur(16px);
+      animation: founderGlow 4s ease infinite alternate;
+    }
+    @keyframes founderGlow { 0%{opacity:0.5} 100%{opacity:1} }
+    .founder-img {
+      position: relative; z-index: 1;
+      border-radius: 32px; overflow: hidden;
+      border: 2px solid rgba(201,160,61,0.6);
+      box-shadow: 0 24px 48px -12px rgba(0,0,0,0.7), 0 0 40px rgba(201,160,61,0.1);
+    }
+    .founder-img img { width: 100%; display: block; aspect-ratio: 3/4; object-fit: cover; object-position: top; }
+
+    /* Corner accents on photo */
+    .founder-corner {
+      position: absolute; width: 20px; height: 20px; z-index: 2;
+      border-color: var(--gold); border-style: solid; border-width: 0;
+    }
+    .founder-corner.tl { top: -2px; left: -2px; border-top-width: 3px; border-left-width: 3px; border-top-left-radius: 8px; }
+    .founder-corner.tr { top: -2px; right: -2px; border-top-width: 3px; border-right-width: 3px; border-top-right-radius: 8px; }
+    .founder-corner.bl { bottom: -2px; left: -2px; border-bottom-width: 3px; border-left-width: 3px; border-bottom-left-radius: 8px; }
+    .founder-corner.br { bottom: -2px; right: -2px; border-bottom-width: 3px; border-right-width: 3px; border-bottom-right-radius: 8px; }
+
+    .leader-right { flex: 2; min-width: 300px; }
+    .leader-right p { color: #c5d4ea; line-height: 1.75; margin-bottom: 16px; }
+    .tag-group { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+    .tag {
+      background: rgba(15,38,66,0.8); border-radius: 30px;
+      padding: 5px 16px; font-size: 11px; font-weight: 600;
+      color: var(--gold); border: 1px solid rgba(201,160,61,0.25);
+      font-family: 'Rajdhani', sans-serif; letter-spacing: 1px;
+      transition: 0.25s;
+    }
+    .tag:hover { background: rgba(201,160,61,0.15); border-color: rgba(201,160,61,0.5); }
+
+    /* =========================================
+       CONTACT + MAP
+    ========================================= */
+    .contact-map-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 30px; }
     .contact-info {
-      background: linear-gradient(145deg, #0e1d32, #09162a);
-      border-radius: 32px; padding: 32px; border: 1px solid #2a4e7a;
+      background: var(--card-bg);
+      border-radius: 32px; padding: 36px; border: 1px solid #2a4e7a;
     }
-    .info-item {
-      display: flex; align-items: center; gap: 18px; margin-bottom: 28px;
-      padding: 12px 0; border-bottom: 1px solid #1e3a58;
-    }
+    .info-item { display: flex; align-items: center; gap: 18px; margin-bottom: 28px; padding: 12px 0; border-bottom: 1px solid #1e3a58; }
     .info-icon {
-      font-size: 28px; background: #c9a03d20; width: 52px; height: 52px;
+      font-size: 26px; background: rgba(201,160,61,0.12); width: 52px; height: 52px;
       border-radius: 30px; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
     }
-    .info-detail a, .info-detail span { color: #e2edff; text-decoration: none; font-weight: 500; }
-    .info-detail a:hover { color: #c9a03d; text-decoration: underline; }
-    .map-container { border-radius: 32px; overflow: hidden; border: 1px solid #c9a03d; min-height: 320px; background: #102135; }
-    #map { height: 100%; width: 100%; min-height: 320px; z-index: 1; }
-    @media (max-width: 860px) { .contact-map-wrapper { grid-template-columns: 1fr; } .leader-flex { padding: 28px; } }
+    .info-detail strong { display: block; color: var(--text); font-size: 0.85rem; margin-bottom: 2px; }
+    .info-detail a, .info-detail span { color: #c5d4ea; text-decoration: none; font-size: 0.9rem; display: block; }
+    .info-detail a:hover { color: var(--gold); }
+    .info-detail small { color: #527aa5; font-size: 0.72rem; }
+    .map-container { border-radius: 32px; overflow: hidden; border: 1px solid rgba(201,160,61,0.35); min-height: 340px; }
+    #map { height: 100%; width: 100%; min-height: 340px; }
+
+    /* =========================================
+       FOOTER
+    ========================================= */
     footer {
-      text-align: center; padding: 40px 20px; background: #030812;
-      border-top: 1px solid #c9a03d40; font-size: 13px; color: #527aa5;
+      text-align: center; padding: 48px 20px;
+      background: #020810;
+      border-top: 1px solid rgba(201,160,61,0.2);
+      font-size: 13px; color: #527aa5;
+    }
+    footer p { margin-bottom: 8px; }
+    footer .footer-logo {
+      font-family: 'Cinzel', serif; font-size: 1.1rem; font-weight: 700;
+      background: linear-gradient(135deg, #fff, var(--gold));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      margin-bottom: 16px; display: block;
+    }
+
+    /* =========================================
+       SECTION BACKGROUNDS
+    ========================================= */
+    #mission { background: #06101e; }
+    #services { background: var(--navy); }
+    #publications { background: var(--navy2); }
+    #blog { background: #07111f; }
+    #leadership { background: var(--navy); }
+    #contact { background: var(--navy2); }
+
+    /* Glowing section border top */
+    #services::before, #blog::before, #leadership::before {
+      content: ''; position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(201,160,61,0.3), transparent);
+    }
+
+    /* =========================================
+       RESPONSIVE
+    ========================================= */
+    @media (max-width: 860px) {
+      .contact-map-wrapper { grid-template-columns: 1fr; }
+      .leader-flex { padding: 28px; }
+      .hero-stats { gap: 24px; }
+      .stat-item::after { display: none; }
+    }
+    @media (max-width: 540px) {
+      .leader-flex { padding: 20px; }
+    }
+
+    /* =========================================
+       GLITCH EFFECT (on hover on title)
+    ========================================= */
+    @keyframes glitch1 {
+      0%,100%{clip-path:inset(0 0 90% 0)} 20%{clip-path:inset(30% 0 50% 0)} 40%{clip-path:inset(60% 0 20% 0)}
+    }
+    @keyframes glitch2 {
+      0%,100%{clip-path:inset(80% 0 5% 0)} 20%{clip-path:inset(10% 0 80% 0)} 40%{clip-path:inset(40% 0 40% 0)}
+    }
+
+    /* =========================================
+       TICKER / MARQUEE BAR
+    ========================================= */
+    .ticker-bar {
+      background: rgba(10,132,255,0.08);
+      border-top: 1px solid rgba(10,132,255,0.2);
+      border-bottom: 1px solid rgba(10,132,255,0.2);
+      overflow: hidden; white-space: nowrap;
+      padding: 10px 0; position: relative; z-index: 5;
+    }
+    .ticker-inner {
+      display: inline-block;
+      animation: tickerScroll 30s linear infinite;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.75rem; letter-spacing: 2px; color: #7a9ccc; font-weight: 600;
+    }
+    @keyframes tickerScroll { 0%{transform:translateX(100vw)} 100%{transform:translateX(-100%)} }
+
+    /* =========================================
+       ANIMATED NUMBERS / COUNTERS
+    ========================================= */
+    .stat-digit[data-target] { transition: text-shadow 0.5s; }
+
+    /* =========================================
+       PROGRESS BARS (publications stat)
+    ========================================= */
+    .progress-bars { margin: 40px 0; }
+    .progress-item { margin-bottom: 24px; }
+    .progress-label { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem; color: #8aa4cd; font-family: 'Rajdhani', sans-serif; letter-spacing: 1px; }
+    .progress-track { height: 5px; background: #0e1d32; border-radius: 5px; overflow: hidden; }
+    .progress-fill {
+      height: 100%; width: 0; border-radius: 5px;
+      background: linear-gradient(90deg, var(--blue), var(--gold));
+      transition: width 1.5s cubic-bezier(0.2,0.9,0.4,1);
+    }
+
+    /* =========================================
+       GLOBE DECORATIVE SVG
+    ========================================= */
+    .globe-deco {
+      position: absolute; right: -80px; top: 50%; transform: translateY(-50%);
+      width: 340px; height: 340px; opacity: 0.06; pointer-events: none;
+      z-index: 0;
+      animation: globeSpin 40s linear infinite;
+    }
+    @keyframes globeSpin { 0%{transform:translateY(-50%) rotate(0deg)} 100%{transform:translateY(-50%) rotate(360deg)} }
+
+    /* =========================================
+       NOISE TEXTURE OVERLAY
+    ========================================= */
+    body::after {
+      content: ''; position: fixed; inset: 0; z-index: 99998;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      opacity: 0.4;
     }
   </style>
 </head>
 <body>
 
-<!-- CURSOR ELEMENTS -->
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-logo">STRATARA INTELLIGENCE</div>
+  <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
+  <div style="font-family:'Rajdhani',sans-serif;font-size:0.65rem;letter-spacing:3px;color:#2a4e7a;margin-top:8px;">INITIALIZING GEOECONOMIC INTELLIGENCE</div>
+</div>
+
+<!-- CURSOR -->
 <div class="cursor-dot"></div>
 <div class="cursor-ring"></div>
 
+<!-- NAVBAR -->
 <nav class="navbar">
   <div class="nav-container">
     <a href="#" class="logo">
@@ -407,76 +843,161 @@
   </div>
 </nav>
 <div class="mobile-menu" id="mobileMenu">
-  <a href="#home">HOME</a>
-  <a href="#mission">MISSION</a>
-  <a href="#services">SERVICES</a>
-  <a href="#publications">RESEARCH</a>
-  <a href="#blog">BLOG</a>
-  <a href="#leadership">FOUNDER</a>
-  <a href="#contact">CONTACT</a>
+  <a href="#home">HOME</a><a href="#mission">MISSION</a><a href="#services">SERVICES</a>
+  <a href="#publications">RESEARCH</a><a href="#blog">BLOG</a>
+  <a href="#leadership">FOUNDER</a><a href="#contact">CONTACT</a>
 </div>
 
-<!-- HERO SECTION -->
+<!-- ===================== HERO ===================== -->
 <section id="home" class="hero">
+  <!-- Aurora background layers -->
+  <div class="aurora"></div>
+  <div class="aurora-extra"></div>
+
+  <!-- Video layer -->
   <video class="hero-video" autoplay loop muted playsinline>
     <source src="https://assets.mixkit.co/videos/preview/mixkit-digital-globe-animation-1211-large.mp4" type="video/mp4">
-    <source src="https://cdn.pixabay.com/video/2020/10/11/52135-472081552_large.mp4" type="video/mp4">
   </video>
-  <div class="hero-overlay"></div>
-  <div class="parallax-bg" data-speed="0.2"></div>
+
+  <!-- Particle canvas -->
+  <canvas id="particleCanvas"></canvas>
+
+  <!-- Grid + scanlines -->
+  <div class="hero-grid"></div>
+  <div class="scanline"></div>
+  <div class="hero-spotlight"></div>
+
+  <!-- Pulse rings -->
+  <div class="rings-container">
+    <div class="ring-pulse"></div>
+    <div class="ring-pulse"></div>
+    <div class="ring-pulse"></div>
+  </div>
+
+  <!-- Floating data blobs -->
+  <div class="data-blob">◈ EURASIAN CORRIDOR · LIVE</div>
+  <div class="data-blob">◈ GEOPOLITICAL RISK INDEX · 7.4</div>
+  <div class="data-blob">◈ SCOPUS INDEXED · 42 WORKS</div>
+  <div class="data-blob">◈ 32 COUNTRIES · GLOBAL REACH</div>
+
+  <!-- Main content -->
   <div class="hero-content">
-    <div class="badge reveal">✦ GEOECONOMIC FORESIGHT ✦</div>
-    <h1 class="reveal">STRATARA<br>INTELLIGENCE, LLC</h1>
+    <div class="badge reveal">✦ GEOECONOMIC FORESIGHT · EST. STRATARA ✦</div>
+
+    <div style="margin-bottom:0.6rem;">
+      <span class="typewriter-wrap" id="typewriterEl"></span><span class="typewriter-cursor"></span>
+    </div>
+
+    <div class="title-wrapper reveal">
+      <h1 class="hero-title">
+        <span class="title-line1">STRATARA</span>
+        <span class="title-line2">INTELLIGENCE, LLC</span>
+      </h1>
+    </div>
+
     <p class="hero-sub reveal">Global advisory and research specializing in geoeconomic analysis, international business strategy, and cross-cultural market intelligence.</p>
+
     <div class="btn-group reveal">
       <a href="#services" class="btn-primary">Explore Capabilities</a>
-      <a href="#contact" class="btn-outline">Connect with us</a>
+      <a href="#contact" class="btn-outline">Connect with Us</a>
     </div>
+
     <div class="hero-stats reveal">
-      <div><span class="stat-digit" data-target="60">0</span><div class="stat-label">PEER-REVIEWED PUBLICATIONS</div></div>
-      <div><span class="stat-digit" data-target="42">0</span><div class="stat-label">INDEXED IN SCOPUS/WoS</div></div>
-      <div><span class="stat-digit" data-target="635">0</span><div class="stat-label">CITATIONS</div></div>
-      <div><span class="stat-digit" data-target="32">0</span><div class="stat-label">COUNTRIES</div></div>
+      <div class="stat-item">
+        <div class="stat-digit" data-target="60">0</div>
+        <div class="stat-label">PEER-REVIEWED PUBLICATIONS</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-digit" data-target="42">0</div>
+        <div class="stat-label">INDEXED IN SCOPUS / WoS</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-digit" data-target="635">0</div>
+        <div class="stat-label">CITATIONS</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-digit" data-target="32">0</div>
+        <div class="stat-label">COUNTRIES</div>
+      </div>
     </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="scroll-indicator">
+    <div class="scroll-mouse"><div class="scroll-mouse-dot"></div></div>
+    <div class="scroll-label">SCROLL</div>
   </div>
 </section>
 
-<!-- MISSION & VISION -->
+<!-- TICKER -->
+<div class="ticker-bar">
+  <span class="ticker-inner">◈ GEOECONOMIC INTELLIGENCE &nbsp;&nbsp;&nbsp; ◈ CROSS-CULTURAL ADVISORY &nbsp;&nbsp;&nbsp; ◈ 60+ PEER-REVIEWED PUBLICATIONS &nbsp;&nbsp;&nbsp; ◈ 635+ CITATIONS ACROSS 12 LANGUAGES &nbsp;&nbsp;&nbsp; ◈ ELITE UNIVERSITY LIBRARIES · HARVARD · MIT · PRINCETON · IMPERIAL COLLEGE LONDON &nbsp;&nbsp;&nbsp; ◈ IBM · CARGILL · SIEMENS · COCA-COLA &nbsp;&nbsp;&nbsp; ◈ GEOPOLITICAL RISK ASSESSMENT &nbsp;&nbsp;&nbsp; ◈ INTERNATIONAL BUSINESS STRATEGY &nbsp;&nbsp;&nbsp;</span>
+</div>
+
+<!-- ===================== MISSION & VISION ===================== -->
 <section id="mission">
   <div class="container">
     <div class="section-title reveal">Guiding Principles</div>
     <div class="section-sub reveal">Strategic clarity for a disruptive global economy</div>
+    <div class="section-divider reveal"><span class="section-divider-icon">◈</span></div>
     <div class="mv-grid">
-      <div class="mv-card reveal"><h3>Mission</h3><p>Stratara Intelligence, LLC empowers leaders to navigate global complexity by delivering rigorous geoeconomic analysis, strategic insight, and cross-cultural intelligence. We advance informed decision-making through interdisciplinary research, international collaboration, and a commitment to thought leadership in a disruptive global economy.</p></div>
-      <div class="mv-card reveal"><h3>Vision</h3><p>To be a globally recognized authority in geoeconomic intelligence and strategic advisory, shaping how institutions, markets, and governments understand and navigate the complexities of an interconnected world.</p></div>
+      <div class="mv-card reveal-left">
+        <h3>Mission</h3>
+        <p>Stratara Intelligence, LLC empowers leaders to navigate global complexity by delivering rigorous geoeconomic analysis, strategic insight, and cross-cultural intelligence. We advance informed decision-making through interdisciplinary research, international collaboration, and a commitment to thought leadership in a disruptive global economy.</p>
+      </div>
+      <div class="mv-card reveal-right">
+        <h3>Vision</h3>
+        <p>To be a globally recognized authority in geoeconomic intelligence and strategic advisory, shaping how institutions, markets, and governments understand and navigate the complexities of an interconnected world.</p>
+      </div>
     </div>
-    <div class="reveal" style="text-align:center; margin-top:20px;">
-      <p style="background: #c9a03d10; border-radius: 60px; padding: 16px 24px; max-width: 800px; margin:0 auto; border-left: 4px solid #c9a03d;"><strong>Positioning Statement</strong><br>Stratara Intelligence, LLC operates at the intersection of geoeconomics, global strategy, and cross-cultural intelligence by delivering research-driven advisory services that enable leaders to navigate complexity, mitigate risk, and capitalize on emerging opportunities in international markets.</p>
+    <div class="reveal" style="text-align:center;margin-top:24px;">
+      <p style="background:rgba(201,160,61,0.06);border-radius:60px;padding:20px 32px;max-width:800px;margin:0 auto;border-left:3px solid var(--gold);color:#c5d4ea;line-height:1.75;">
+        <strong style="color:var(--gold);">Positioning Statement</strong><br>
+        Stratara Intelligence, LLC operates at the intersection of geoeconomics, global strategy, and cross-cultural intelligence — delivering research-driven advisory services that enable leaders to navigate complexity, mitigate risk, and capitalize on emerging opportunities in international markets.
+      </p>
     </div>
   </div>
 </section>
 
-<!-- SERVICES -->
+<!-- ===================== SERVICES ===================== -->
 <section id="services">
   <div class="container">
     <div class="section-title reveal">Advisory & Research Excellence</div>
     <div class="section-sub reveal">Bridging geoeconomics, psychology, and strategy for multinational resilience.</div>
+    <div class="section-divider reveal"><span class="section-divider-icon">◈</span></div>
     <div class="services-grid">
-      <div class="service-card reveal"><div class="service-icon">🌐</div><h3>Geoeconomic Analysis</h3><p>Trade corridors, power shifts, emerging markets — actionable foresight.</p></div>
-      <div class="service-card reveal"><div class="service-icon">📊</div><h3>International Business Strategy</h3><p>Market entry, cross-border expansion, competitive positioning.</p></div>
-      <div class="service-card reveal"><div class="service-icon">🧭</div><h3>Cross-Cultural Intelligence</h3><p>Multilingual frameworks & cultural agility for global teams.</p></div>
-      <div class="service-card reveal"><div class="service-icon">⚡</div><h3>Geopolitical Risk Assessment</h3><p>Navigate sanctions, political volatility, and regulatory shifts.</p></div>
-      <div class="service-card reveal"><div class="service-icon">📘</div><h3>Research & Publishing</h3><p>Scopus/WoS indexed handbooks, white papers, scholarly impact.</p></div>
-      <div class="service-card reveal"><div class="service-icon">🎓</div><h3>Executive Education</h3><p>Custom workshops on geoeconomics & global leadership.</p></div>
+      <div class="service-card reveal"><span class="service-icon">🌐</span><h3>Geoeconomic Analysis</h3><p>Trade corridors, power shifts, emerging markets — actionable foresight.</p></div>
+      <div class="service-card reveal"><span class="service-icon">📊</span><h3>International Business Strategy</h3><p>Market entry, cross-border expansion, competitive positioning.</p></div>
+      <div class="service-card reveal"><span class="service-icon">🧭</span><h3>Cross-Cultural Intelligence</h3><p>Multilingual frameworks & cultural agility for global teams.</p></div>
+      <div class="service-card reveal"><span class="service-icon">⚡</span><h3>Geopolitical Risk Assessment</h3><p>Navigate sanctions, political volatility, and regulatory shifts.</p></div>
+      <div class="service-card reveal"><span class="service-icon">📘</span><h3>Research & Publishing</h3><p>Scopus/WoS indexed handbooks, white papers, scholarly impact.</p></div>
+      <div class="service-card reveal"><span class="service-icon">🎓</span><h3>Executive Education</h3><p>Custom workshops on geoeconomics & global leadership.</p></div>
     </div>
   </div>
 </section>
 
-<!-- PUBLICATIONS (keep same content) -->
-<section id="publications" style="background: #030b16;">
+<!-- ===================== PUBLICATIONS ===================== -->
+<section id="publications" style="background:#030b16;">
   <div class="container">
     <div class="section-title reveal">Scholarly Impact</div>
-    <div class="section-sub reveal">60+ peer‑reviewed works · 42 indexed in Scopus or Web of Science · 635+ citations across 12 languages · Held in elite university libraries worldwide (Harvard, MIT, Princeton, Imperial College, etc.)</div>
+    <div class="section-sub reveal">60+ peer-reviewed works · 42 indexed in Scopus or Web of Science · 635+ citations across 12 languages · Held in elite university libraries worldwide</div>
+
+    <!-- Progress bars -->
+    <div class="progress-bars reveal" style="max-width:600px;margin:0 auto 50px;">
+      <div class="progress-item">
+        <div class="progress-label"><span>Scopus / WoS Indexed</span><span>70%</span></div>
+        <div class="progress-track"><div class="progress-fill" data-width="70"></div></div>
+      </div>
+      <div class="progress-item">
+        <div class="progress-label"><span>Cross-disciplinary Reach</span><span>85%</span></div>
+        <div class="progress-track"><div class="progress-fill" data-width="85"></div></div>
+      </div>
+      <div class="progress-item">
+        <div class="progress-label"><span>International Citations</span><span>92%</span></div>
+        <div class="progress-track"><div class="progress-fill" data-width="92"></div></div>
+      </div>
+    </div>
+
     <div class="pub-filters reveal">
       <button class="filter-btn active" data-filter="all">All</button>
       <button class="filter-btn" data-filter="articles">Journal Articles</button>
@@ -491,7 +1012,7 @@
       <div class="pub-row reveal"><div class="pub-year">2016</div><div class="pub-body"><div class="pub-title">English as a Foreign Language Teaching and Productivity in Global Hypercompetition (with Fatmanur Kasarci)</div><div class="pub-sub">International Journal of Innovation in the Digital Economy, Vol.7, 47-55</div></div></div>
       <div class="pub-row reveal"><div class="pub-year">2016</div><div class="pub-body"><div class="pub-title">Cultural Indoctrination in Global Hypercompetition: A Conceptual Framework for International Management</div><div class="pub-sub">International Journal of Productivity Management and Assessment Technologies, Vol.4, 39-51</div></div></div>
     </div>
-    <div id="pubBooks" class="pub-group" style="display: block;">
+    <div id="pubBooks" class="pub-group">
       <div class="pub-section-label reveal">📚 REFERENCE BOOKS (Scopus / Web of Science indexed)</div>
       <div class="pub-row reveal"><div class="pub-year">2026</div><div class="pub-body"><div class="pub-title">Critical Economic Implications of Global Demographic Changes (with John Branch)</div><div class="pub-sub">IGI Global</div></div><span class="pub-badge">Scopus</span></div>
       <div class="pub-row reveal"><div class="pub-year">2026</div><div class="pub-body"><div class="pub-title">Impacts of Geoeconomics and Geopolitics on International Business (with John Branch)</div><div class="pub-sub">IGI Global</div></div><span class="pub-badge">Scopus</span></div>
@@ -506,243 +1027,443 @@
   </div>
 </section>
 
-<!-- BLOG SECTION (new, professional, matching structure) -->
-<section id="blog" style="background: #07111f;">
+<!-- ===================== BLOG ===================== -->
+<section id="blog">
   <div class="container">
     <div class="section-title reveal">Insights & Perspectives</div>
     <div class="section-sub reveal">Fresh analysis on geoeconomics, international strategy, and global risk from Stratara Intelligence.</div>
+    <div class="section-divider reveal"><span class="section-divider-icon">◈</span></div>
     <div class="blog-grid">
-      <div class="blog-card reveal">
-        <div class="blog-icon">📈</div>
-        <h3>The New Silk Road 2.0</h3>
-        <div class="blog-date">March 15, 2026</div>
-        <div class="blog-excerpt">Geoeconomic implications of evolving Eurasian infrastructure corridors, digital connectivity, and emerging middle-power alliances reshaping trade.</div>
-        <a href="#" class="read-more">Read more →</a>
-      </div>
-      <div class="blog-card reveal">
-        <div class="blog-icon">🧠</div>
-        <h3>Cultural Intelligence in M&A</h3>
-        <div class="blog-date">February 28, 2026</div>
-        <div class="blog-excerpt">Reducing post-merger failure: strategic frameworks for integrating divergent organizational cultures across borders and mitigating human capital risks.</div>
-        <a href="#" class="read-more">Read more →</a>
-      </div>
-      <div class="blog-card reveal">
-        <div class="blog-icon">⚙️</div>
-        <h3>US-China Tech Decoupling</h3>
-        <div class="blog-date">February 5, 2026</div>
-        <div class="blog-excerpt">Geopolitical risk dashboard: semiconductor supply chains, export controls, and strategic autonomy for multinational enterprises.</div>
-        <a href="#" class="read-more">Read more →</a>
-      </div>
-      <div class="blog-card reveal">
-        <div class="blog-icon">👥</div>
-        <h3>Demographic Shifts & Labor Resilience</h3>
-        <div class="blog-date">January 20, 2026</div>
-        <div class="blog-excerpt">Europe's workforce transformation: aging populations, migration patterns, and the future of productivity in advanced economies.</div>
-        <a href="#" class="read-more">Read more →</a>
-      </div>
+      <div class="blog-card reveal"><span class="blog-icon">📈</span><h3>The New Silk Road 2.0</h3><div class="blog-date">March 15, 2026</div><div class="blog-excerpt">Geoeconomic implications of evolving Eurasian infrastructure corridors, digital connectivity, and emerging middle-power alliances reshaping trade.</div><a href="#" class="read-more">Read more →</a></div>
+      <div class="blog-card reveal"><span class="blog-icon">🧠</span><h3>Cultural Intelligence in M&A</h3><div class="blog-date">February 28, 2026</div><div class="blog-excerpt">Reducing post-merger failure: strategic frameworks for integrating divergent organizational cultures across borders and mitigating human capital risks.</div><a href="#" class="read-more">Read more →</a></div>
+      <div class="blog-card reveal"><span class="blog-icon">⚙️</span><h3>US-China Tech Decoupling</h3><div class="blog-date">February 5, 2026</div><div class="blog-excerpt">Geopolitical risk dashboard: semiconductor supply chains, export controls, and strategic autonomy for multinational enterprises.</div><a href="#" class="read-more">Read more →</a></div>
+      <div class="blog-card reveal"><span class="blog-icon">👥</span><h3>Demographic Shifts & Labor Resilience</h3><div class="blog-date">January 20, 2026</div><div class="blog-excerpt">Europe's workforce transformation: aging populations, migration patterns, and the future of productivity in advanced economies.</div><a href="#" class="read-more">Read more →</a></div>
     </div>
   </div>
 </section>
 
-<!-- LEADERSHIP (Founder with photo) -->
+<!-- ===================== LEADERSHIP ===================== -->
 <section id="leadership">
   <div class="container">
-    <div style="text-align: center;"><span class="badge reveal">✦ OUR FOUNDER ✦</span></div>
-    <div class="section-title reveal">Bryan Christiansen, MBA, MS**</div>
-    <div class="section-sub reveal">Founder & Chairman · Editor‑in‑Chief · Scholar-Practitioner · MS in I/O Psychology (expected 2029)</div>
+    <div style="text-align:center;"><span class="badge reveal">✦ OUR FOUNDER ✦</span></div>
+    <div class="section-title reveal">Bryan Christiansen, MBA, MS</div>
+    <div class="section-sub reveal">Founder & Chairman · Editor-in-Chief · Scholar-Practitioner · MS in I/O Psychology (expected 2029)</div>
+    <div class="section-divider reveal"><span class="section-divider-icon">◈</span></div>
     <div class="leader-card reveal">
       <div class="leader-flex">
         <div class="leader-left">
-          <div class="founder-img"><img src="https://i.ibb.co/jPbsB5TQ/IMG-20251228-WA0006-1.jpg" alt="Bryan Christiansen"></div>
-          <ul style="list-style: none; text-align: left; margin-top: 20px;">
-            <li style="margin-bottom: 10px;">🔹 Founder & Chairman, Stratara Intelligence, LLC</li>
-            <li style="margin-bottom: 10px;">🔹 Editor-in-Chief, IGI Global Scientific Publishing</li>
-            <li style="margin-bottom: 10px;">🔹 Harvard Business Review Advisory Council</li>
-            <li style="margin-bottom: 10px;">🔹 Adjunct Instructor, Southern New Hampshire University</li>
-            <li style="margin-bottom: 10px;">🔹 U.S. Foreign Service Eligibility List (2002,2007) · Top Secret Clearance</li>
-            <li>🌐 Languages: English, Spanish (Advanced), Mandarin Chinese, Japanese, Turkish, Russian</li>
+          <div class="founder-img-wrap">
+            <div class="founder-img-glow"></div>
+            <div class="founder-img">
+              <!-- NEW PHOTO -->
+              <img src="https://i.ibb.co/mV2H5Qt8/IMG-20260331-WA0001.jpg" alt="Bryan Christiansen">
+            </div>
+            <div class="founder-corner tl"></div>
+            <div class="founder-corner tr"></div>
+            <div class="founder-corner bl"></div>
+            <div class="founder-corner br"></div>
+          </div>
+          <ul style="list-style:none;text-align:left;margin-top:20px;">
+            <li style="margin-bottom:10px;font-size:0.9rem;color:#c5d4ea;">🔹 Founder & Chairman, Stratara Intelligence, LLC</li>
+            <li style="margin-bottom:10px;font-size:0.9rem;color:#c5d4ea;">🔹 Editor-in-Chief, IGI Global Scientific Publishing</li>
+            <li style="margin-bottom:10px;font-size:0.9rem;color:#c5d4ea;">🔹 Harvard Business Review Advisory Council</li>
+            <li style="margin-bottom:10px;font-size:0.9rem;color:#c5d4ea;">🔹 Adjunct Instructor, Southern New Hampshire University</li>
+            <li style="margin-bottom:10px;font-size:0.9rem;color:#c5d4ea;">🔹 U.S. Foreign Service Eligibility List (2002, 2007) · Top Secret Clearance</li>
+            <li style="font-size:0.9rem;color:#c5d4ea;">🌐 Languages: English, Spanish (Advanced), Mandarin Chinese, Japanese, Turkish, Russian</li>
           </ul>
         </div>
         <div class="leader-right">
-          <p style="margin-bottom: 16px;">Multilingual scholar-practitioner with 60 peer‑reviewed publications across geoeconomics, industrial/organizational psychology, international business, and workforce development. 42 publications indexed in Scopus or Web of Science (70% of total), receiving over 635 citations across 12 languages in journal articles, master's theses, and doctoral dissertations.</p>
-          <p style="margin-bottom: 16px;">Professional experience spans business, consulting, and higher education across 32 countries with Global 500 firms including IBM, Cargill, Siemens, and Coca‑Cola. Publications distributed to elite university libraries worldwide: Harvard, MIT, Princeton, McGill, Imperial College London, University of Michigan, and Waseda.</p>
-          <p style="margin-bottom: 16px; background:#c9a03d10; padding:12px; border-radius:20px;"><strong>MS in Industrial/Organizational Psychology</strong> (in progress, expected 2029) · Southern New Hampshire University · MBA (4.0 GPA) Capella University · BS Marketing, University of the State of New York</p>
-          <div class="tag-group"><span class="tag">Geoeconomics</span><span class="tag">Cross-Cultural I/O</span><span class="tag">Geopolitical Risk</span><span class="tag">Workforce Development</span><span class="tag">International Strategy</span><span class="tag">Organizational Sociology</span></div>
+          <p>Multilingual scholar-practitioner with 60 peer-reviewed publications across geoeconomics, industrial/organizational psychology, international business, and workforce development. 42 publications indexed in Scopus or Web of Science (70% of total), receiving over 635 citations across 12 languages in journal articles, master's theses, and doctoral dissertations.</p>
+          <p>Professional experience spans business, consulting, and higher education across 32 countries with Global 500 firms including IBM, Cargill, Siemens, and Coca-Cola. Publications distributed to elite university libraries worldwide: Harvard, MIT, Princeton, McGill, Imperial College London, University of Michigan, and Waseda.</p>
+          <p style="background:rgba(201,160,61,0.07);padding:16px 20px;border-radius:20px;border-left:3px solid var(--gold);">
+            <strong style="color:var(--gold);">MS in Industrial/Organizational Psychology</strong> (in progress, expected 2029) · Southern New Hampshire University · MBA (4.0 GPA) Capella University · BS Marketing, University of the State of New York
+          </p>
+          <div class="tag-group">
+            <span class="tag">Geoeconomics</span>
+            <span class="tag">Cross-Cultural I/O</span>
+            <span class="tag">Geopolitical Risk</span>
+            <span class="tag">Workforce Development</span>
+            <span class="tag">International Strategy</span>
+            <span class="tag">Organizational Sociology</span>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- CONTACT + MAP -->
-<section id="contact" style="background: #030b16;">
+<!-- ===================== CONTACT ===================== -->
+<section id="contact" style="background:#030b16;">
   <div class="container">
     <div class="section-title reveal">Connect & Engage</div>
-    <div class="section-sub reveal">Let’s discuss geoeconomic intelligence, research collaborations, or advisory mandates.</div>
+    <div class="section-sub reveal">Let's discuss geoeconomic intelligence, research collaborations, or advisory mandates.</div>
+    <div class="section-divider reveal"><span class="section-divider-icon">◈</span></div>
     <div class="contact-map-wrapper">
       <div class="contact-info reveal">
-        <div class="info-item"><div class="info-icon">📧</div><div class="info-detail"><strong>Email</strong><br><a href="mailto:strataraintel@proton.me">strataraintel@proton.me</a><span style="font-size:12px;">Encrypted & secure</span></div></div>
-        <div class="info-item"><div class="info-icon">📞</div><div class="info-detail"><strong>Phone</strong><br><a href="tel:+12522680484">(252) 268-0484</a><span style="font-size:12px;">Click to call</span></div></div>
-        <div class="info-item"><div class="info-icon">📍</div><div class="info-detail"><strong>Headquarters</strong><br><span>760 Cody Lane, Kinston, NC 28504, USA</span><span style="font-size:12px;">Advisory & Research Divisions</span></div></div>
-        <div style="margin-top:20px;"><a href="mailto:strataraintel@proton.me" class="btn-primary">Send an Inquiry →</a></div>
+        <div class="info-item">
+          <div class="info-icon">📧</div>
+          <div class="info-detail">
+            <strong>Email</strong>
+            <a href="mailto:info@strataraintelligence.com">info@strataraintelligence.com</a>
+            <small>Encrypted & secure</small>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon">📞</div>
+          <div class="info-detail">
+            <strong>Phone</strong>
+            <a href="tel:+12522680484">(252) 268-0484</a>
+            <small>Click to call</small>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon">📍</div>
+          <div class="info-detail">
+            <strong>Headquarters</strong>
+            <span>760 Cody Lane, Kinston, NC 28504, USA</span>
+            <small>Advisory & Research Divisions</small>
+          </div>
+        </div>
+        <div style="margin-top:20px;">
+          <a href="mailto:info@strataraintelligence.com" class="btn-primary">Send an Inquiry →</a>
+        </div>
       </div>
       <div class="map-container reveal"><div id="map"></div></div>
     </div>
   </div>
 </section>
 
-<footer><p>© <span id="year"></span> Stratara Intelligence, LLC — Kinston, North Carolina, USA — Advisory & Research Divisions</p><p>🌍 Intelligence without borders</p></footer>
+<!-- FOOTER -->
+<footer>
+  <span class="footer-logo">STRATARA INTELLIGENCE</span>
+  <p>© <span id="year"></span> Stratara Intelligence, LLC — Kinston, North Carolina, USA</p>
+  <p>Advisory & Research Divisions &nbsp;·&nbsp; 🌍 Intelligence without borders</p>
+</footer>
 
+<!-- SCRIPTS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-  // Force page to start at the very top on load or refresh
-  if ('scrollRestoration' in history) {
-    history.scrollRestoration = 'manual';
-  }
-  window.addEventListener('load', () => {
-    window.scrollTo(0, 0);
-  });
-  // Also handle any potential hash in URL after load (remove # from URL without jumping)
-  if (window.location.hash) {
-    setTimeout(() => {
-      window.scrollTo(0, 0);
-      // Optionally clear hash without causing jump
-      history.pushState("", document.title, window.location.pathname + window.location.search);
-    }, 10);
-  }
+// ============================================================
+// LOADER
+// ============================================================
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('loader').classList.add('hidden');
+  }, 2000);
+  window.scrollTo(0, 0);
+});
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 
-  // ---------- CUSTOM CURSOR ----------
-  const dot = document.querySelector('.cursor-dot');
-  const ring = document.querySelector('.cursor-ring');
-  if (dot && ring) {
-    document.addEventListener('mousemove', (e) => {
-      dot.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
-      ring.style.transform = `translate(${e.clientX}px, ${e.clientY}px) scale(1)`;
-    });
-    document.addEventListener('mouseleave', () => {
-      dot.style.opacity = '0';
-      ring.style.opacity = '0';
-    });
-    document.addEventListener('mouseenter', () => {
-      dot.style.opacity = '1';
-      ring.style.opacity = '1';
-    });
-    const interactive = document.querySelectorAll('a, button, .service-card, .btn-primary, .btn-outline, .pub-row, .filter-btn, .blog-card, .read-more');
-    interactive.forEach(el => {
-      el.addEventListener('mouseenter', () => ring.style.transform = `scale(1.4)`);
-      el.addEventListener('mouseleave', () => ring.style.transform = `scale(1)`);
-    });
-  }
+// ============================================================
+// CUSTOM CURSOR
+// ============================================================
+const dot = document.querySelector('.cursor-dot');
+const ring = document.querySelector('.cursor-ring');
+let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
 
-  // ---------- SCROLL REVEAL (Intersection Observer) ----------
-  const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('revealed');
-        observer.unobserve(entry.target);
+document.addEventListener('mousemove', (e) => {
+  mouseX = e.clientX; mouseY = e.clientY;
+  dot.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%,-50%)`;
+});
+
+function animateRing() {
+  ringX += (mouseX - ringX) * 0.12;
+  ringY += (mouseY - ringY) * 0.12;
+  ring.style.transform = `translate(${ringX}px, ${ringY}px) translate(-50%,-50%)`;
+  requestAnimationFrame(animateRing);
+}
+animateRing();
+
+document.addEventListener('mouseleave', () => { dot.style.opacity='0'; ring.style.opacity='0'; });
+document.addEventListener('mouseenter', () => { dot.style.opacity='1'; ring.style.opacity='1'; });
+
+document.querySelectorAll('a, button, .service-card, .mv-card, .blog-card, .pub-row, .tag').forEach(el => {
+  el.addEventListener('mouseenter', () => ring.classList.add('hovered'));
+  el.addEventListener('mouseleave', () => ring.classList.remove('hovered'));
+});
+document.addEventListener('mousedown', () => ring.classList.add('clicking'));
+document.addEventListener('mouseup', () => ring.classList.remove('clicking'));
+
+// ============================================================
+// PARTICLE NETWORK CANVAS
+// ============================================================
+const canvas = document.getElementById('particleCanvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+let W, H;
+
+function resizeCanvas() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', () => { resizeCanvas(); initParticles(); });
+
+class Particle {
+  constructor() { this.reset(); }
+  reset() {
+    this.x = Math.random() * W;
+    this.y = Math.random() * H;
+    this.vx = (Math.random() - 0.5) * 0.4;
+    this.vy = (Math.random() - 0.5) * 0.4;
+    this.r = Math.random() * 1.5 + 0.4;
+    this.alpha = Math.random() * 0.6 + 0.15;
+    this.color = Math.random() > 0.6 ? '#c9a03d' : '#0a84ff';
+  }
+  update() {
+    this.x += this.vx; this.y += this.vy;
+    if (this.x < 0 || this.x > W || this.y < 0 || this.y > H) this.reset();
+  }
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+    ctx.fillStyle = this.color;
+    ctx.globalAlpha = this.alpha;
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+}
+
+function initParticles() {
+  particles = [];
+  const count = Math.floor((W * H) / 10000);
+  for (let i = 0; i < count; i++) particles.push(new Particle());
+}
+initParticles();
+
+function drawConnections() {
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 130) {
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        const alpha = (1 - dist/130) * 0.12;
+        ctx.strokeStyle = `rgba(10,132,255,${alpha})`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
       }
-    });
-  }, { threshold: 0.15, rootMargin: "0px 0px -30px 0px" });
-  reveals.forEach(r => observer.observe(r));
-
-  // ---------- ANIMATED COUNTERS ----------
-  const counters = document.querySelectorAll('.stat-digit[data-target]');
-  const counterObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const el = entry.target;
-        const target = parseInt(el.getAttribute('data-target'), 10);
-        let current = 0;
-        const increment = target / 60;
-        const updateCounter = () => {
-          current += increment;
-          if (current < target) {
-            el.innerText = Math.floor(current);
-            requestAnimationFrame(updateCounter);
-          } else {
-            el.innerText = target;
-          }
-        };
-        updateCounter();
-        counterObserver.unobserve(el);
-      }
-    });
-  }, { threshold: 0.5 });
-  counters.forEach(c => counterObserver.observe(c));
-
-  // ---------- PARALLAX EFFECT ----------
-  const parallaxElements = document.querySelectorAll('.parallax-bg, .hero .rings-bg');
-  window.addEventListener('scroll', () => {
-    const scrolled = window.scrollY;
-    parallaxElements.forEach(el => {
-      const speed = el.getAttribute('data-speed') || 0.2;
-      el.style.transform = `translateY(${scrolled * speed}px)`;
-    });
-    const heroVideo = document.querySelector('.hero-video');
-    if (heroVideo) heroVideo.style.transform = `translateY(${scrolled * 0.1}px) scale(1.02)`;
-  });
-
-  // ---------- PUBLICATION FILTER ----------
-  const articlesDiv = document.getElementById('pubArticles');
-  const booksDiv = document.getElementById('pubBooks');
-  const filterBtns = document.querySelectorAll('.filter-btn');
-  function filterPubs(type) {
-    if (type === 'all') { articlesDiv.style.display = ''; booksDiv.style.display = ''; }
-    else if (type === 'articles') { articlesDiv.style.display = ''; booksDiv.style.display = 'none'; }
-    else { articlesDiv.style.display = 'none'; booksDiv.style.display = ''; }
+    }
   }
-  filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      filterBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      filterPubs(btn.getAttribute('data-filter'));
-    });
-  });
-  filterPubs('all');
+}
 
-  // ---------- ACTIVE NAV ON SCROLL ----------
-  const sections = document.querySelectorAll('section');
-  window.addEventListener('scroll', () => {
-    let current = '';
-    sections.forEach(sec => {
-      const top = sec.offsetTop - 150;
-      if (pageYOffset >= top) current = sec.getAttribute('id');
-    });
-    document.querySelectorAll('.nav-links a').forEach(a => {
-      a.classList.remove('active');
-      if (a.getAttribute('href') === `#${current}`) a.classList.add('active');
-    });
-  });
-  document.getElementById('year').innerText = new Date().getFullYear();
+function animateParticles() {
+  ctx.clearRect(0, 0, W, H);
+  drawConnections();
+  particles.forEach(p => { p.update(); p.draw(); });
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
 
-  // ---------- LEAFLET MAP (Kinston) ----------
-  const map = L.map('map').setView([35.2672, -77.5816], 13);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> & CartoDB',
-    subdomains: 'abcd',
-    maxZoom: 18,
-  }).addTo(map);
-  L.marker([35.2672, -77.5816]).addTo(map).bindPopup('<b>Stratara Intelligence, LLC</b><br/>760 Cody Lane, Kinston, NC 28504').openPopup();
-  L.circle([35.2672, -77.5816], { radius: 600, color: '#c9a03d', weight: 1.5, fillOpacity: 0.1 }).addTo(map);
+// ============================================================
+// TYPEWRITER
+// ============================================================
+const phrases = [
+  'GEOECONOMIC INTELLIGENCE',
+  'CROSS-CULTURAL STRATEGY',
+  'GEOPOLITICAL FORESIGHT',
+  'INTERNATIONAL ADVISORY',
+  'SCHOLARLY EXCELLENCE'
+];
+let pIdx = 0, cIdx = 0, deleting = false;
+const twEl = document.getElementById('typewriterEl');
 
-  // ---------- MOBILE MENU FIXED (toggle + close on click) ----------
-  const menuToggle = document.getElementById('menuToggle');
-  const mobileMenu = document.getElementById('mobileMenu');
-  if (menuToggle && mobileMenu) {
-    menuToggle.addEventListener('click', (e) => {
-      e.stopPropagation();
-      mobileMenu.classList.toggle('open');
-    });
-    document.querySelectorAll('.mobile-menu a').forEach(link => {
-      link.addEventListener('click', () => mobileMenu.classList.remove('open'));
-    });
-    document.addEventListener('click', (event) => {
-      if (!mobileMenu.contains(event.target) && !menuToggle.contains(event.target) && mobileMenu.classList.contains('open')) {
-        mobileMenu.classList.remove('open');
-      }
-    });
+function typeWrite() {
+  const phrase = phrases[pIdx];
+  if (!deleting) {
+    twEl.textContent = phrase.slice(0, cIdx + 1);
+    cIdx++;
+    if (cIdx === phrase.length) { deleting = true; setTimeout(typeWrite, 1800); return; }
+    setTimeout(typeWrite, 70);
+  } else {
+    twEl.textContent = phrase.slice(0, cIdx - 1);
+    cIdx--;
+    if (cIdx === 0) { deleting = false; pIdx = (pIdx + 1) % phrases.length; setTimeout(typeWrite, 300); return; }
+    setTimeout(typeWrite, 35);
   }
+}
+typeWrite();
+
+// ============================================================
+// SCROLL REVEAL
+// ============================================================
+const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('revealed'), i * 60);
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -20px 0px' });
+revealEls.forEach(el => revealObserver.observe(el));
+
+// ============================================================
+// ANIMATED COUNTERS
+// ============================================================
+const counters = document.querySelectorAll('.stat-digit[data-target]');
+const counterObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const el = entry.target;
+      const target = parseInt(el.getAttribute('data-target'), 10);
+      let start = 0;
+      const duration = 1800;
+      const startTime = performance.now();
+      function update(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.floor(eased * target);
+        if (progress < 1) requestAnimationFrame(update);
+        else el.textContent = target;
+      }
+      requestAnimationFrame(update);
+      counterObserver.unobserve(el);
+    }
+  });
+}, { threshold: 0.5 });
+counters.forEach(c => counterObserver.observe(c));
+
+// ============================================================
+// PROGRESS BARS
+// ============================================================
+const progressBars = document.querySelectorAll('.progress-fill[data-width]');
+const progressObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const el = entry.target;
+      setTimeout(() => { el.style.width = el.getAttribute('data-width') + '%'; }, 300);
+      progressObserver.unobserve(el);
+    }
+  });
+}, { threshold: 0.5 });
+progressBars.forEach(b => progressObserver.observe(b));
+
+// ============================================================
+// PARALLAX
+// ============================================================
+let ticking = false;
+window.addEventListener('scroll', () => {
+  if (!ticking) {
+    requestAnimationFrame(() => {
+      const scrolled = window.scrollY;
+      const heroVideo = document.querySelector('.hero-video');
+      if (heroVideo) heroVideo.style.transform = `translateY(${scrolled * 0.15}px) scale(1.02)`;
+      const heroGrid = document.querySelector('.hero-grid');
+      if (heroGrid) heroGrid.style.transform = `translateY(${scrolled * 0.05}px)`;
+      ticking = false;
+    });
+    ticking = true;
+  }
+});
+
+// ============================================================
+// NAVBAR SCROLL CLASS
+// ============================================================
+window.addEventListener('scroll', () => {
+  const navbar = document.querySelector('.navbar');
+  if (window.scrollY > 60) navbar.classList.add('scrolled');
+  else navbar.classList.remove('scrolled');
+
+  // Active nav
+  let current = '';
+  document.querySelectorAll('section').forEach(sec => {
+    if (pageYOffset >= sec.offsetTop - 160) current = sec.getAttribute('id');
+  });
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    a.classList.remove('active');
+    if (a.getAttribute('href') === `#${current}`) a.classList.add('active');
+  });
+});
+
+// ============================================================
+// PUBLICATION FILTER
+// ============================================================
+const articlesDiv = document.getElementById('pubArticles');
+const booksDiv = document.getElementById('pubBooks');
+function filterPubs(type) {
+  if (type === 'all') { articlesDiv.style.display=''; booksDiv.style.display=''; }
+  else if (type === 'articles') { articlesDiv.style.display=''; booksDiv.style.display='none'; }
+  else { articlesDiv.style.display='none'; booksDiv.style.display=''; }
+}
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    filterPubs(btn.getAttribute('data-filter'));
+  });
+});
+filterPubs('all');
+
+// ============================================================
+// MOBILE MENU
+// ============================================================
+const menuToggle = document.getElementById('menuToggle');
+const mobileMenu = document.getElementById('mobileMenu');
+if (menuToggle && mobileMenu) {
+  menuToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    mobileMenu.classList.toggle('open');
+  });
+  document.querySelectorAll('.mobile-menu a').forEach(link => {
+    link.addEventListener('click', () => mobileMenu.classList.remove('open'));
+  });
+  document.addEventListener('click', (e) => {
+    if (!mobileMenu.contains(e.target) && !menuToggle.contains(e.target)) {
+      mobileMenu.classList.remove('open');
+    }
+  });
+}
+
+// ============================================================
+// LEAFLET MAP
+// ============================================================
+document.getElementById('year').textContent = new Date().getFullYear();
+const map = L.map('map').setView([35.2672, -77.5816], 13);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  attribution: '&copy; OSM & CartoDB', subdomains: 'abcd', maxZoom: 18
+}).addTo(map);
+const goldIcon = L.divIcon({
+  html: `<div style="width:14px;height:14px;border-radius:50%;background:#c9a03d;box-shadow:0 0 12px #c9a03d,0 0 24px rgba(201,160,61,0.5);border:2px solid #fff;"></div>`,
+  iconSize: [14,14], iconAnchor: [7,7]
+});
+L.marker([35.2672, -77.5816], { icon: goldIcon }).addTo(map)
+  .bindPopup('<b style="color:#c9a03d;">Stratara Intelligence, LLC</b><br/>760 Cody Lane, Kinston, NC 28504').openPopup();
+L.circle([35.2672, -77.5816], { radius: 600, color: '#c9a03d', weight: 1.5, fillOpacity: 0.08 }).addTo(map);
+
+// ============================================================
+// SERVICE CARD TILT EFFECT
+// ============================================================
+document.querySelectorAll('.service-card, .mv-card, .blog-card').forEach(card => {
+  card.addEventListener('mousemove', (e) => {
+    const rect = card.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    card.style.transform = `translateY(-8px) rotateX(${-y * 6}deg) rotateY(${x * 6}deg)`;
+    card.style.transition = 'transform 0.1s';
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = '';
+    card.style.transition = 'all 0.4s cubic-bezier(0.2,0.9,0.4,1.1)';
+  });
+});
+
+// ============================================================
+// FLOATING DATA BLOBS mouse parallax
+// ============================================================
+document.addEventListener('mousemove', (e) => {
+  const blobs = document.querySelectorAll('.data-blob');
+  const cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+  const dx = (e.clientX - cx) / cx, dy = (e.clientY - cy) / cy;
+  blobs.forEach((b, i) => {
+    const depth = (i + 1) * 4;
+    b.style.transform = `translateY(${Math.sin(Date.now()/1800 + i) * 12}px) translateX(${dx * depth}px)`;
+  });
+});
 </script>
 </body>
 </html>
